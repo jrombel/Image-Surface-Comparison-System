@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -55,6 +58,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Base.cs" />
+    <Compile Include="BrushTool.cs" />
+    <Compile Include="Color.cs" />
+    <Compile Include="Pages\AboutSystem.xaml.cs">
+      <DependentUpon>AboutSystem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Analysis.xaml.cs">
+      <DependentUpon>Analysis.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Calculation.xaml.cs">
+      <DependentUpon>Calculation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Photo.cs" />
+    <Compile Include="WandTool.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,6 +84,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\AboutSystem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Analysis.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Calculation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -94,6 +123,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\handTool_img.png" />
+    <Resource Include="Resources\icon.ico" />
+    <Resource Include="Resources\loadPhoto_img.png" />
+    <Resource Include="Resources\magnifierTool_img.png" />
+    <Resource Include="Resources\onlyForTests_img.png" />
+    <Resource Include="Resources\selectionAddMode_img.png" />
+    <Resource Include="Resources\selectionBrushTool_img.png" />
+    <Resource Include="Resources\selectionFreeTool_img.png" />
+    <Resource Include="Resources\selectionNewMode_img.png" />
+    <Resource Include="Resources\selectionSubtractMode_img.png" />
+    <Resource Include="Resources\selectionWandTool_img.png" />
+    <Resource Include="Resources\undoTool_img.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

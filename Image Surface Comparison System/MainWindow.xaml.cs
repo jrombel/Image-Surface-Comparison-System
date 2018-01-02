@@ -1,28 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Image_Surface_Comparison_System.Pages;
+using System.IO;
 
 namespace Image_Surface_Comparison_System
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        Page calculation_p;
+        Page analysis_p;
+        Page aboutSystem_p;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            calculation_p = new Calculation();
+            analysis_p = new Analysis();
+            aboutSystem_p = new AboutSystem();
+
+            main_f.Content = calculation_p;
+            Base.path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Photos";
+        }
+
+        private void Calculate_Click(object sender, RoutedEventArgs e)
+        {
+            main_f.Content = calculation_p;
+        }
+        private void Analysis_Click(object sender, RoutedEventArgs e)
+        {
+            main_f.Content = analysis_p;
+        }
+        private void AboutSystem_Click(object sender, RoutedEventArgs e)
+        {
+            main_f.Content = aboutSystem_p;
+        }
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

@@ -5,8 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Image_Surface_Comparison_System"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="ISCS - Image Surface Comparison System" MinWidth="1024" MinHeight="600" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Grid Background="#464646">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <RadioButton GroupName="menu_gp" Style="{StaticResource {x:Type ToggleButton}}" Margin="3" Padding="2" Content="Calculate" Click="Calculate_Click" IsChecked="True" />
+            <RadioButton GroupName="menu_gp" Style="{StaticResource {x:Type ToggleButton}}" Margin="3" Padding="2" Content="Analysis" Click="Analysis_Click" />
+            <RadioButton GroupName="menu_gp" Style="{StaticResource {x:Type ToggleButton}}" Margin="3" Padding="2" Content="About system" Click="AboutSystem_Click" />
+        </StackPanel>
+
+        <Label Grid.Column="2" VerticalAlignment="Center" FontSize="14.7" FontFamily="Calibri Light" Foreground="White">The system was created as a result of the graduation thesis at the Faculty of Computer Science of the Bialystok University of Technology</Label>
+        <Separator Grid.Row="1" Grid.ColumnSpan="3" Margin="0" />
+
+        <Frame Grid.Row="2" Grid.ColumnSpan="3" Name="main_f" NavigationUIVisibility="Hidden"/>
+
     </Grid>
 </Window>
