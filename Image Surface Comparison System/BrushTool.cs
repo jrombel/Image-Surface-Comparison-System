@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace Image_Surface_Comparison_System
 {
@@ -10,8 +11,9 @@ namespace Image_Surface_Comparison_System
         int size;
         int startX;
         int startY;
+        int shape;
 
-        public BrushTool(Photo patient, Photo orginal, int mode, int startX, int startY, int size)
+        public BrushTool(Photo patient, Photo orginal, int mode, int startX, int startY, int size, int shape)
         {
             this.patient = patient;
             this.orginal = orginal;
@@ -19,12 +21,18 @@ namespace Image_Surface_Comparison_System
             this.size = size;
             this.startX = startX;
             this.startY = startY;
+            this.shape = shape;
         }
 
         public Photo Brush()
         {
             if (mode == 0)
+            {
                 patient.pixelData = (uint[])orginal.pixelData.Clone();
+                Array.Clear(patient.selectedPixels, 0, patient.selectedPixels.Length);
+                patient.selectedPixelsCount = 0;
+                mode = 1;
+            }
 
             int x, y;
 
@@ -42,33 +50,30 @@ namespace Image_Surface_Comparison_System
             else
                 y = startY - (size / 2);
 
-            int index;
-
-            DrawCircle(startX, startY, size);
-            //for (int i = 0; i < size; i++)
-            //{
-            //    for (int j = 0; j < size; j++)
-            //    {
-            //        index = patient.GetIndex(x + i, y + j);
-            //        if (mode != 2)
-            //            patient.pixelData[index] = 0xffff0000;
-            //        else
-            //            patient.pixelData[index] = orginal.pixelData[index];
-            //    }
-            //}
-
-
-
-
+            if (shape == 0)
+                DrawCircle(startX, startY, size);
+            else
+                DrawSquare(startX, startY, size);
 
 
             patient.photo.WritePixels(new Int32Rect(0, 0, (int)patient.width, (int)patient.height), patient.pixelData, patient.widthInByte, 0);
             return patient;
         }
 
-        private void DrawCircle(int x0, int y0, int radius)
+        private void DrawSquare(int startX, int startY, int size)
         {
-            int x = radius - 1;
+            int x = startX - size / 2 + 1;
+            int y = startY - size / 2 + 1;
+
+            for (int i = 0; i < size; i++)
+                for (int j = 0; j < size; j++)
+                    DrawPixel(x + i, y + j);
+        }
+
+        private void DrawCircle(int x0, int y0, int size)
+        {
+            int radius = (size / 2) - 1;
+            int x = radius;
             int y = 0;
             int dx = 1;
             int dy = 1;
@@ -76,14 +81,19 @@ namespace Image_Surface_Comparison_System
 
             while (x >= y)
             {
-                PutPixel(x0 + x, y0 + y);
-                PutPixel(x0 + y, y0 + x);
-                PutPixel(x0 - y, y0 + x);
-                PutPixel(x0 - x, y0 + y);
-                PutPixel(x0 - x, y0 - y);
-                PutPixel(x0 - y, y0 - x);
-                PutPixel(x0 + y, y0 - x);
-                PutPixel(x0 + x, y0 - y);
+                DrawPixel(x0 + x, y0 + y);
+                DrawPixel(x0 + y, y0 + x);
+                DrawPixel(x0 - y, y0 + x);
+                DrawPixel(x0 - x, y0 + y);
+                DrawPixel(x0 - x, y0 - y);
+                DrawPixel(x0 - y, y0 - x);
+                DrawPixel(x0 + y, y0 - x);
+                DrawPixel(x0 + x, y0 - y);
+
+                DrawLine(x0 + x, x0 - x, y0 + y);
+                DrawLine(x0 + y, x0 - y, y0 + x);
+                DrawLine(x0 - x, x0 + x, y0 - y);
+                DrawLine(x0 - y, x0 + y, y0 - x);
 
                 if (err <= 0)
                 {
@@ -98,17 +108,44 @@ namespace Image_Surface_Comparison_System
                     err += dx - (radius << 1);
                 }
             }
+            radius--;
         }
 
-        private void PutPixel(int x, int y)
+        private void DrawPixel(int x, int y)
         {
-            int index;
-            index = patient.GetIndex(x, y);
-            if (mode != 2)
-                patient.pixelData[index] = 0xffff0000;
-            else
-                patient.pixelData[index] = orginal.pixelData[index];
+            if (x >= 0 && x < patient.width && y >= 0 && y < patient.height)
+            {
+                int index;
+                index = patient.GetIndex(x, y);
+                if (mode != 2)
+                {
+                    if (patient.selectedPixels[x, y] == false)
+                    {
+                        patient.pixelData[index] = Color.ToUint(Base.selectedColor);
+                        patient.selectedPixels[x, y] = true;
+                        patient.selectedPixelsCount++;
+                    }
+                }
+                else
+                {
+                    if (patient.selectedPixels[x, y] == true)
+                    {
+                        patient.pixelData[index] = orginal.pixelData[index];
+                        patient.selectedPixels[x, y] = false;
+                        patient.selectedPixelsCount--;
+                    }
+                }
+            }
         }
 
+        private void DrawLine(int x1, int x2, int y)
+        {
+            if (x1 < x2)
+                for (; x1 < x2; x1++)
+                    DrawPixel(x1, y);
+            else
+                for (; x2 < x1; x2++)
+                    DrawPixel(x2, y);
+        }
     }
 }

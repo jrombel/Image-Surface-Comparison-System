@@ -81,7 +81,7 @@ namespace Image_Surface_Comparison_System
                 }
 
                 visitedPixels[x2, y2] = true;
-                
+
                 if (adjacent)
                 {
                     comparative = orginal.GetColor(index);

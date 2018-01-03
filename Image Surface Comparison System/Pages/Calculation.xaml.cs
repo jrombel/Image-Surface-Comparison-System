@@ -21,6 +21,9 @@ namespace Image_Surface_Comparison_System
         Point startHand;
         Point originHand;
 
+        int brushShape = 0;
+        double scale = 1;
+
         public Calculation()
         {
             InitializeComponent();
@@ -50,10 +53,10 @@ namespace Image_Surface_Comparison_System
                 b.UriSource = new Uri(filename);
                 b.EndInit();
 
-                image1_img.Source = b;
-                image1Orginal_img.Source = b;
-                photoOrginal = new Photo((BitmapSource)image1Orginal_img.Source);
-                photo = new Photo((BitmapSource)image1_img.Source);
+                image_img.Source = b;
+                imageOrginal_img.Source = b;
+                photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+                photo = new Photo((BitmapSource)image_img.Source);
             }
         }
 
@@ -99,8 +102,14 @@ namespace Image_Surface_Comparison_System
             else if (selectedTool == 1)
             {
                 BrushTool brushTool;
-                brushTool = new BrushTool(photo, orginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text));
+                brushTool = new BrushTool(photo, orginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
                 image.Source = brushTool.Brush().photo;
+
+                if (selectedMode == 0)
+                {
+                    selectionAddMode_rb.IsChecked = true;
+                    selectedMode = 1;
+                }
 
                 brushDown = true;
             }
@@ -110,8 +119,8 @@ namespace Image_Surface_Comparison_System
             }
             else if (selectedTool == 3)
             {
-                image1_img.CaptureMouse();
-                TranslateTransform tt = new TranslateTransform(image1_img.RenderTransform.Value.OffsetX, image1_img.RenderTransform.Value.OffsetY);
+                image_img.CaptureMouse();
+                TranslateTransform tt = new TranslateTransform(image_img.RenderTransform.Value.OffsetX, image_img.RenderTransform.Value.OffsetY);
                 startHand = e.GetPosition(this);
                 originHand = new Point(tt.X, tt.Y);
             }
@@ -119,45 +128,34 @@ namespace Image_Surface_Comparison_System
             {
                 if (magnifierZoomInMode.IsChecked == true)
                 {
-                    image1_img.RenderTransform = null;
+                    image_img.RenderTransform = null;
 
-                    var position = e.MouseDevice.GetPosition(image1_img);
+                    var position = e.MouseDevice.GetPosition(image_img);
 
                     scale += 0.1;
 
-                    image1_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
-                    image1Orginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+                    image_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+                    imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
                     magnifierZoom_l.Content = scale * 100 + "%";
                 }
                 else
                 {
-                    image1_img.RenderTransform = null;
+                    image_img.RenderTransform = null;
 
-                    var position = e.MouseDevice.GetPosition(image1_img);
+                    var position = e.MouseDevice.GetPosition(image_img);
 
                     if (scale - 0.1 >= 1)
                     {
                         scale -= 0.1;
 
-                        image1_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
-                        image1Orginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+                        image_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+                        imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
                         magnifierZoom_l.Content = scale * 100 + "%";
                     }
                 }
             }
-
-            //possible operations
-            //firstPhoto.pixelData[index] ^= 0xffffff; //inversion
-            //firstPhoto.pixelData[index] = 0xff0000; //ascription
-
-
-            //display information
-            //Image1Color_l.Content = "Color: " + selected.ToString();
-            //Image1Pixels_l.Content = "x: " + x + "| y: " + y + "| index: " + index;
-
-            double allPixels = this.photo.width * this.photo.height;
-            degree_l.Content = string.Format("{0:0.00}", (((double)(this.photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + this.photo.selectedPixels + "pixels\nAll: " + allPixels + "pixels";
-
+            double allPixels = photo.width * photo.height;
+            degree_l.Content = string.Format("{0:0.00}", (((double)(photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
         }
 
         private void Image_img_MouseMove(object sender, MouseEventArgs e)
@@ -178,7 +176,7 @@ namespace Image_Surface_Comparison_System
                 if (Mouse.LeftButton == MouseButtonState.Pressed)
                 {
                     BrushTool brushTool;
-                    brushTool = new BrushTool(photo, orginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text));
+                    brushTool = new BrushTool(photo, orginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
                     image.Source = brushTool.Brush().photo;
                 }
                 else
@@ -188,30 +186,36 @@ namespace Image_Surface_Comparison_System
             }
             else if (selectedTool == 3)
             {
-                if (image1_img.IsMouseCaptured)
+                if (image_img.IsMouseCaptured)
                 {
                     Vector v = startHand - e.GetPosition(this);
-                    image1_img.RenderTransform = new ScaleTransform(scale, scale, originHand.X - v.X, originHand.Y - v.Y);
-                    image1Orginal_img.RenderTransform = new ScaleTransform(scale, scale, originHand.X - v.X, originHand.Y - v.Y);
+                    image_img.RenderTransform = new ScaleTransform(scale, scale, originHand.X - v.X, originHand.Y - v.Y);
+                    imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, originHand.X - v.X, originHand.Y - v.Y);
                 }
+            }
+
+            if (photo != null)
+            {
+                double allPixels = photo.width * photo.height;
+                degree_l.Content = string.Format("{0:0.00}", (((double)(photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
             }
         }
 
-        private void image1_img_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void image_img_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (selectedTool == 3)
             {
-                image1_img.ReleaseMouseCapture();
+                image_img.ReleaseMouseCapture();
             }
         }
 
         private void Image_img_MouseEnter(object sender, MouseEventArgs e)
         {
 
-            if (image1_img.Source.ToString() != "pack://application:,,,/Image Surface Comparison System;component/Resources/loadPhoto_img.png")
+            if (image_img.Source.ToString() != "pack://application:,,,/Image Surface Comparison System;component/Resources/loadPhoto_img.png")
             {
                 if (selectedTool == 1)
-                    Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * (image1_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * (image1_img.ActualWidth / photo.photo.PixelWidth), Brushes.Red, null);
+                    Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / photo.photo.PixelWidth));
             }
             else
             {
@@ -225,13 +229,11 @@ namespace Image_Surface_Comparison_System
             this.Cursor = null;
         }
 
-
-        double scale = 1;
         private void image_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            image1_img.RenderTransform = null;
+            image_img.RenderTransform = null;
 
-            var position = e.MouseDevice.GetPosition(image1_img);
+            var position = e.MouseDevice.GetPosition(image_img);
 
             if (e.Delta > 0)
                 scale += 0.1;
@@ -241,18 +243,24 @@ namespace Image_Surface_Comparison_System
                     scale -= 0.1;
             }
 
-            image1_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
-            image1Orginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+            image_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+            imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
             magnifierZoom_l.Content = scale * 100 + "%";
+            if (selectedTool == 1)
+                Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / photo.photo.PixelWidth));
         }
 
-        Cursor CreateCursor(double rx, double ry, SolidColorBrush brush, Pen pen)
+        Cursor CreateCursor(double rx, double ry)
         {
             DrawingVisual vis = new DrawingVisual();
             DrawingContext dc = vis.RenderOpen();
 
-            //dc.DrawRectangle(brush, new Pen(Brushes.Black, 1), new Rect(0, 0, rx, ry));
-            dc.DrawEllipse(brush, new Pen(Brushes.Black, 1), new Point(rx, ry), rx, ry);
+            SolidColorBrush brush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
+
+            if (squareShape_rb.IsChecked == true)
+                dc.DrawRectangle(brush, new Pen(Brushes.Black, 1), new Rect(0, 0, rx, ry));
+            else
+                dc.DrawEllipse(brush, new Pen(Brushes.Black, 1), new Point(rx / 2, ry / 2), rx / 2, ry / 2);
             dc.Close();
 
             RenderTargetBitmap rtb = new RenderTargetBitmap(512, 512, 96, 96, PixelFormats.Pbgra32);
@@ -354,16 +362,16 @@ namespace Image_Surface_Comparison_System
                 b.UriSource = new Uri(filename);
                 b.EndInit();
 
-                image1_img.Source = b;
-                image1Orginal_img.Source = b;
-                photoOrginal = new Photo((BitmapSource)image1Orginal_img.Source);
-                photo = new Photo((BitmapSource)image1_img.Source);
+                image_img.Source = b;
+                imageOrginal_img.Source = b;
+                photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+                photo = new Photo((BitmapSource)image_img.Source);
                 photoCounter = (photo_cb.SelectedIndex + 1) + " / " + photo_cb.Items.Count;
             }
             else
             {
-                image1_img.Source = null;
-                image1Orginal_img.Source = null;
+                image_img.Source = null;
+                imageOrginal_img.Source = null;
                 photoCounter = "0 / 0";
             }
 
@@ -372,7 +380,7 @@ namespace Image_Surface_Comparison_System
 
         private void PreviousPhoto_Click(object sender, RoutedEventArgs e)
         {
-            if (photo_cb.SelectedIndex - 1 > 0)
+            if (photo_cb.SelectedIndex - 1 >= 0)
                 photo_cb.SelectedIndex--;
         }
 
@@ -380,6 +388,14 @@ namespace Image_Surface_Comparison_System
         {
             if (photo_cb.SelectedIndex + 1 < photo_cb.Items.Count)
                 photo_cb.SelectedIndex++;
+        }
+
+        private void brushShape_rb_Click(object sender, RoutedEventArgs e)
+        {
+            if (circleShape_rb.IsChecked == true)
+                brushShape = 0;
+            else
+                brushShape = 1;
         }
     }
 }
