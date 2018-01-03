@@ -5,28 +5,31 @@ namespace Image_Surface_Comparison_System
     public class Photo
     {
         public WriteableBitmap photo;
-        public double height;
-        public double width;
+        public int height;
+        public int width;
         public uint[] pixelData;
         public int widthInByte;
-        public int selectedPixels;
+        public bool[,] selectedPixels;
+        public int selectedPixelsCount;
+
         public Photo(BitmapSource source)
         {
             photo = new WriteableBitmap(source);
             height = photo.PixelHeight;
             width = photo.PixelWidth;
 
-            pixelData = new uint[(int)(width * height)];
-            widthInByte = (int)(4 * width);
+            pixelData = new uint[width * height];
+            widthInByte = 4 * width;
 
             photo.CopyPixels(pixelData, widthInByte, 0);
 
-            selectedPixels = 0;
+            selectedPixels = new bool[width, height];
+            selectedPixelsCount = 0;
         }
 
-        public int GetIndex(double x, double y)
+        public int GetIndex(int x, int y)
         {
-            return (int)(y * width + x);
+            return y * width + x;
         }
 
         public Color GetColor(int index)

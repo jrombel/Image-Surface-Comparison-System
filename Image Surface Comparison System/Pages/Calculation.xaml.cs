@@ -83,7 +83,7 @@ namespace Image_Surface_Comparison_System
             double y = Math.Floor(e.GetPosition(image).Y * photo.photo.PixelHeight / image.ActualHeight);
 
             //determining the color of the indicated pixel
-            int index = photo.GetIndex(x, y);
+            int index = photo.GetIndex((int)x, (int)y);
             Color selected = null;
 
             //operation of the selected tool
@@ -156,7 +156,7 @@ namespace Image_Surface_Comparison_System
             //Image1Pixels_l.Content = "x: " + x + "| y: " + y + "| index: " + index;
 
             double allPixels = this.photo.width * this.photo.height;
-            degree_l.Content = string.Format("{0:0.00}", (((double)(this.photo.selectedPixels) / allPixels)) * 100) + "% \nSelected: " + this.photo.selectedPixels + "pixels\nAll: " + allPixels + "pixels";
+            degree_l.Content = string.Format("{0:0.00}", (((double)(this.photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + this.photo.selectedPixels + "pixels\nAll: " + allPixels + "pixels";
 
         }
 

@@ -8,5 +8,7 @@ namespace Image_Surface_Comparison_System
         static public List<String> albums { set; get; }
         static public List<String> photos;
         static public String path;
+
+        static public Color selectedColor = new Color(255, 255, 255);
     }
 }

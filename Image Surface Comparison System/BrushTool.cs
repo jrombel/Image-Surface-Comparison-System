@@ -43,20 +43,72 @@ namespace Image_Surface_Comparison_System
                 y = startY - (size / 2);
 
             int index;
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    index = patient.GetIndex(x + i, y + j);
-                    if (mode != 2)
-                        patient.pixelData[index] = 0xffff0000;
-                    else
-                        patient.pixelData[index] = orginal.pixelData[index];
-                }
-            }
+
+            DrawCircle(startX, startY, size);
+            //for (int i = 0; i < size; i++)
+            //{
+            //    for (int j = 0; j < size; j++)
+            //    {
+            //        index = patient.GetIndex(x + i, y + j);
+            //        if (mode != 2)
+            //            patient.pixelData[index] = 0xffff0000;
+            //        else
+            //            patient.pixelData[index] = orginal.pixelData[index];
+            //    }
+            //}
+
+
+
+
+
 
             patient.photo.WritePixels(new Int32Rect(0, 0, (int)patient.width, (int)patient.height), patient.pixelData, patient.widthInByte, 0);
             return patient;
         }
+
+        private void DrawCircle(int x0, int y0, int radius)
+        {
+            int x = radius - 1;
+            int y = 0;
+            int dx = 1;
+            int dy = 1;
+            int err = dx - (radius << 1);
+
+            while (x >= y)
+            {
+                PutPixel(x0 + x, y0 + y);
+                PutPixel(x0 + y, y0 + x);
+                PutPixel(x0 - y, y0 + x);
+                PutPixel(x0 - x, y0 + y);
+                PutPixel(x0 - x, y0 - y);
+                PutPixel(x0 - y, y0 - x);
+                PutPixel(x0 + y, y0 - x);
+                PutPixel(x0 + x, y0 - y);
+
+                if (err <= 0)
+                {
+                    y++;
+                    err += dy;
+                    dy += 2;
+                }
+                if (err > 0)
+                {
+                    x--;
+                    dx += 2;
+                    err += dx - (radius << 1);
+                }
+            }
+        }
+
+        private void PutPixel(int x, int y)
+        {
+            int index;
+            index = patient.GetIndex(x, y);
+            if (mode != 2)
+                patient.pixelData[index] = 0xffff0000;
+            else
+                patient.pixelData[index] = orginal.pixelData[index];
+        }
+
     }
 }
