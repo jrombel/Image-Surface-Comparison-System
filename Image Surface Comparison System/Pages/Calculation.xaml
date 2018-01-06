@@ -56,9 +56,11 @@
 
             <Grid Grid.Row="0" ClipToBounds="True" MouseWheel="image_MouseWheel">
                 <Border BorderThickness="1 0 1 1" BorderBrush="#a0a0a0">
-                    <Grid>
+                    <Grid Name="test">
                         <Image Name="imageOrginal_img" Source="/Image Surface Comparison System;component/Resources/loadPhoto_img.png"/>
-                        <Image Name="image_img" MouseLeftButtonDown="Image_img_MouseLeftButtonDown" MouseLeftButtonUp="image_img_MouseLeftButtonUp" MouseMove="Image_img_MouseMove" MouseEnter="Image_img_MouseEnter" MouseLeave="Image_img_MouseLeave" Source="/Image Surface Comparison System;component/Resources/loadPhoto_img.png" Opacity="{Binding ElementName=opacity_s, Path=Value}"/>
+                        <Image Name="image_img" MouseLeftButtonDown="Image_img_MouseLeftButtonDown" MouseLeftButtonUp="image_img_MouseLeftButtonUp" MouseMove="Image_img_MouseMove" MouseEnter="Image_img_MouseEnter" MouseLeave="Image_img_MouseLeave" Source="/Image Surface Comparison System;component/Resources/loadPhoto_img.png" Opacity="{Binding ElementName=opacity_s, Path=Value}" />
+                        <Canvas Name="canvas_c" Width="{Binding ElementName=image_img, Path=ActualWidth}" Height="{Binding ElementName=image_img, Path=ActualHeight}" ClipToBounds="True" MouseLeftButtonUp="canvas_c_MouseLeftButtonUp" MouseMove="canvas_c_MouseMove"/>
+
                     </Grid>
                 </Border>
             </Grid>
@@ -108,14 +110,14 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="Selection Tool" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <RadioButton Name="selectionPolygonTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Polygon" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}" IsChecked="True">
-                                <Image Source="/Image Surface Comparison System;component/Resources/selectionFreeTool_img.png" Width="35" Height="35"/>
+                            <RadioButton Name="selectionWandTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Wand" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
+                                <Image Source="/Image Surface Comparison System;component/Resources/selectionWandTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
                             <RadioButton Name="selectionBrushTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Brush" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
                                 <Image Source="/Image Surface Comparison System;component/Resources/selectionBrushTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
-                            <RadioButton Name="selectionWandTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Wand" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
-                                <Image Source="/Image Surface Comparison System;component/Resources/selectionWandTool_img.png" Width="35" Height="35"/>
+                            <RadioButton Name="selectionPolygonTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Polygon" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}" IsChecked="True">
+                                <Image Source="/Image Surface Comparison System;component/Resources/selectionFreeTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
                         </StackPanel>
                         <Label Content="Selection Mode" HorizontalAlignment="Center"/>
@@ -178,7 +180,7 @@
                                         <TextBox Grid.Column="0" Margin="5" Name="brushSize_tb" Text="{Binding ElementName=brushSize_s, Path=Value}" TextAlignment="Center"/>
                                         <Slider Grid.Column="1" Margin="5" Name="brushSize_s" Value="{Binding ElementName=brushSize_tb, Path=Text}" Minimum="1" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True"/>
                                     </Grid>
-                                    
+
                                     <Label Content="Shape"/>
                                     <RadioButton Content="Circle" Name="circleShape_rb" GroupName="brushShape_gn" Click="brushShape_rb_Click" IsChecked="True" Foreground="White" />
                                     <RadioButton Content="Square" Name="squareShape_rb" GroupName="brushShape_gn" Click="brushShape_rb_Click" Foreground="White" />
@@ -188,7 +190,9 @@
                         </StackPanel>
 
                         <StackPanel Visibility="{Binding ElementName=selectionPolygonTool_rb, Path=IsChecked, Converter={StaticResource b_To_v}}">
-                            <Label Content="Tu będą ustawienia!"/>
+                            <Button Name="selectPolygon_b" Content="Select" Click="selectPolygon_b_Click" IsEnabled="False" Margin="3" Padding="3"/>
+                            <!--<Button Name="correctPolygon_b" Content="Correct" Click="correctPolygon_b_Click" IsEnabled="False" Margin="3" Padding="3"/>-->
+                            <Button Name="clearPolygon_b" Content="Clear" Click="clearPolygon_b_Click" Margin="3" Padding="3"/>
                         </StackPanel>
 
                         <StackPanel Visibility="{Binding ElementName=magnifierTool_rb, Path=IsChecked, Converter={StaticResource b_To_v}}">

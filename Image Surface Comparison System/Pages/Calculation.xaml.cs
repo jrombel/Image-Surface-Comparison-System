@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Image_Surface_Comparison_System
 {
@@ -24,16 +25,30 @@ namespace Image_Surface_Comparison_System
         int brushShape = 0;
         double scale = 1;
 
+        List<Point> points;
+        Line lineTmp;
+        bool selectedPolygonState = true;
+
         public Calculation()
         {
             InitializeComponent();
 
-            selectedTool = 0;
+            selectedTool = 2;
             selectedMode = 0;
 
             photoDegreeTolerance_s.Value = 20;
             opacity_s.Value = 1;
             brushSize_s.Value = 10;
+
+            points = new List<Point>();
+
+            lineTmp = new Line();
+            lineTmp.Margin = new Thickness(0, 0, 0, 0);
+            lineTmp.Stroke = Brushes.Black;
+            lineTmp.StrokeThickness = 0.5;
+            canvas_c.Children.Add(lineTmp);
+
+            //drawPolygon = true;
         }
 
         private void LoadImage()
@@ -67,23 +82,16 @@ namespace Image_Surface_Comparison_System
 
         private void Image_img_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Image image = (Image)sender;
 
-            Photo photo;
-            Photo orginal;
-
-            photo = this.photo;
-            orginal = photoOrginal;
-
-            if (image.Source.ToString() == "pack://application:,,,/Image Surface Comparison System;component/Resources/loadPhoto_img.png")
+            if (image_img.Source.ToString() == "pack://application:,,,/Image Surface Comparison System;component/Resources/loadPhoto_img.png")
             {
                 LoadImage();
                 return;
             }
 
             //click coordinates
-            double x = Math.Floor(e.GetPosition(image).X * photo.photo.PixelWidth / image.ActualWidth);
-            double y = Math.Floor(e.GetPosition(image).Y * photo.photo.PixelHeight / image.ActualHeight);
+            double x = Math.Floor(e.GetPosition(image_img).X * photo.photo.PixelWidth / image_img.ActualWidth);
+            double y = Math.Floor(e.GetPosition(image_img).Y * photo.photo.PixelHeight / image_img.ActualHeight);
 
             //determining the color of the indicated pixel
             int index = photo.GetIndex((int)x, (int)y);
@@ -93,17 +101,22 @@ namespace Image_Surface_Comparison_System
             if (selectedTool == 0)
             {
                 WandTool wandTool;
-                selected = new Color(orginal.GetColor(index));
-                wandTool = new WandTool(photo, orginal, selectedMode, (int)x, (int)y, (bool)photoDegreeToleranceAdjacent_cb.IsChecked, selected, (byte)photoDegreeTolerance_s.Value);
+                selected = new Color(photoOrginal.GetColor(index));
+                wandTool = new WandTool(photo, photoOrginal, selectedMode, (int)x, (int)y, (bool)photoDegreeToleranceAdjacent_cb.IsChecked, selected, (byte)photoDegreeTolerance_s.Value);
 
-                image.Source = wandTool.Wand().photo;
-                //Image1Color_l.Content = "Color: " + selected.ToString();
+                image_img.Source = wandTool.Wand().photo;
+
+                if (selectedMode == 0)
+                {
+                    selectionAddMode_rb.IsChecked = true;
+                    selectedMode = 1;
+                }
             }
             else if (selectedTool == 1)
             {
                 BrushTool brushTool;
-                brushTool = new BrushTool(photo, orginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
-                image.Source = brushTool.Brush().photo;
+                brushTool = new BrushTool(photo, photoOrginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
+                image_img.Source = brushTool.Brush().photo;
 
                 if (selectedMode == 0)
                 {
@@ -113,9 +126,9 @@ namespace Image_Surface_Comparison_System
 
                 brushDown = true;
             }
-            else if (selectedTool == 2)
+            else if (selectedTool == 2 && selectedPolygonState == true)
             {
-
+                AddPoint(e.GetPosition(canvas_c).X, e.GetPosition(canvas_c).Y);
             }
             else if (selectedTool == 3)
             {
@@ -136,6 +149,7 @@ namespace Image_Surface_Comparison_System
 
                     image_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
                     imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+                    canvas_c.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
                     magnifierZoom_l.Content = scale * 100 + "%";
                 }
                 else
@@ -150,6 +164,7 @@ namespace Image_Surface_Comparison_System
 
                         image_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
                         imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+                        canvas_c.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
                         magnifierZoom_l.Content = scale * 100 + "%";
                     }
                 }
@@ -184,6 +199,15 @@ namespace Image_Surface_Comparison_System
                     brushDown = false;
                 }
             }
+            else if (selectedTool == 2)
+            {
+                if (selectedPolygonState == true && points.Count > 0)
+                {
+                    lineTmp.X2 = e.GetPosition(canvas_c).X;
+                    lineTmp.Y2 = e.GetPosition(canvas_c).Y;
+                }
+            }
+
             else if (selectedTool == 3)
             {
                 if (image_img.IsMouseCaptured)
@@ -245,6 +269,7 @@ namespace Image_Surface_Comparison_System
 
             image_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
             imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
+            canvas_c.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
             magnifierZoom_l.Content = scale * 100 + "%";
             if (selectedTool == 1)
                 Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / photo.photo.PixelWidth));
@@ -334,7 +359,7 @@ namespace Image_Surface_Comparison_System
         {
             Base.photos = new List<String>();
 
-            foreach (var photo in Directory.GetFiles(Base.path + "\\" + album_cb.SelectedValue).Select(Path.GetFileName).ToArray())
+            foreach (var photo in Directory.GetFiles(Base.path + "\\" + album_cb.SelectedValue).Select(System.IO.Path.GetFileName).ToArray())
             {
                 Base.photos.Add(photo);
             }
@@ -397,5 +422,150 @@ namespace Image_Surface_Comparison_System
             else
                 brushShape = 1;
         }
+
+        private void canvas_c_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (selectedTool == 2 && selectedPolygonState == true)
+            {
+                var mouseWasDownOn = e.Source as FrameworkElement;
+                if (mouseWasDownOn != null && mouseWasDownOn.ToString() != "System.Windows.Shapes.Ellipse")
+                {
+                    if (points.Count > 1)
+                    {
+                        if (e.GetPosition(canvas_c).X > (points[0].X - 2) && e.GetPosition(canvas_c).X < (points[0].X + 2) &&
+                            e.GetPosition(canvas_c).Y > (points[0].Y - 2) && e.GetPosition(canvas_c).Y < (points[0].Y + 2))
+                        {
+                            lineTmp.X2 = points[0].X;
+                            lineTmp.Y2 = points[0].Y;
+
+                            selectedPolygonState = false;
+
+                            selectPolygon_b.IsEnabled = true;
+                            //correctPolygon_b.IsEnabled = true;
+
+                            //funkcja wysyłająca polygon do klasy zaznaczającej!
+
+                            //stoped draw
+                            return;
+                        }
+                    }
+                    AddPoint(e.GetPosition(canvas_c).X, e.GetPosition(canvas_c).Y);
+                }
+            }
+        }
+
+        private void AddPoint(double x, double y)
+        {
+            Ellipse pointStart = new Ellipse();
+            pointStart = new Ellipse();
+            pointStart.Height = 2;
+            pointStart.Width = 2;
+            pointStart.Margin = new Thickness(x - 1, y - 1, 0, 0);
+            pointStart.Stroke = Brushes.Black;
+            canvas_c.Children.Add(pointStart);
+
+            Point point = new Point(x, y);
+            points.Add(point);
+
+            lineTmp.X1 = point.X;
+            lineTmp.Y1 = point.Y;
+
+            if (points.Count > 1)
+            {
+                Line line = new Line();
+                line.Margin = new Thickness(0, 0, 0, 0);
+                line.X1 = point.X;
+                line.Y1 = point.Y;
+                line.X2 = points[points.Count - 2].X;
+                line.Y2 = points[points.Count - 2].Y;
+                line.Stroke = Brushes.Black;
+                line.StrokeThickness = 0.5;
+                canvas_c.Children.Add(line);
+            }
+        }
+
+        private void canvas_c_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (selectedTool == 2)
+            {
+                if (selectedPolygonState == true && points.Count > 0)
+                {
+                    lineTmp.X2 = e.GetPosition(canvas_c).X;
+                    lineTmp.Y2 = e.GetPosition(canvas_c).Y;
+                }
+            }
+        }
+
+        private void selectPolygon_b_Click(object sender, RoutedEventArgs e)
+        {
+            PolygonTool brushTool;
+            brushTool = new PolygonTool(photo, photoOrginal, selectedMode, points, image_img.ActualWidth, image_img.ActualHeight);
+            image_img.Source = brushTool.Polygon().photo;
+
+            if (selectedMode == 0)
+            {
+                selectionAddMode_rb.IsChecked = true;
+                selectedMode = 1;
+            }
+
+            clearPolygon_b_Click(sender, e);
+        }
+
+        private void clearPolygon_b_Click(object sender, RoutedEventArgs e)
+        {
+            selectedPolygonState = true;
+            canvas_c.Children.Clear();
+            points.Clear();
+
+            canvas_c.Children.Add(lineTmp);
+            lineTmp.X1 = 0;
+            lineTmp.Y1 = 0;
+            lineTmp.X2 = 0;
+            lineTmp.Y2 = 0;
+
+            selectPolygon_b.IsEnabled = false;
+            //correctPolygon_b.IsEnabled = false;
+            
+        }
+
+        //private void correctPolygon_b_Click(object sender, RoutedEventArgs e)
+        //{
+        //    points[2] = new Point(10, 10);
+
+        //    canvas_c.Children.Clear();
+        //    for (int i = 0; i < points.Count; i++)
+        //    {
+        //        Ellipse pointStart = new Ellipse();
+        //        pointStart = new Ellipse();
+        //        pointStart.Height = 2;
+        //        pointStart.Width = 2;
+        //        pointStart.Margin = new Thickness(points[i].X - 1, points[i].Y - 1, 0, 0);
+        //        pointStart.Stroke = Brushes.Black;
+        //        canvas_c.Children.Add(pointStart);
+
+
+        //        Line line = new Line();
+        //        line.Margin = new Thickness(0, 0, 0, 0);
+        //        if (i - 1 < 0)
+        //        {
+        //            line.X1 = points[points.Count - 1].X;
+        //            line.Y1 = points[points.Count - 1].Y;
+        //        }
+        //        else
+        //        {
+        //            line.X1 = points[i - 1].X;
+        //            line.Y1 = points[i - 1].Y;
+        //        }
+        //        line.X2 = points[i].X;
+        //        line.Y2 = points[i].Y;
+        //        line.Stroke = Brushes.Black;
+        //        line.StrokeThickness = 0.5;
+        //        canvas_c.Children.Add(line);
+        //    }
+        //}
+
+
+
+
     }
 }

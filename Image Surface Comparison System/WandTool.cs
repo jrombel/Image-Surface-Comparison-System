@@ -33,7 +33,6 @@ namespace Image_Surface_Comparison_System
 
         public Photo Wand()
         {
-            index = patient.GetIndex(startX, startY);
             if (mode == 0)
             {
                 patient.pixelData = (uint[])orginal.pixelData.Clone();

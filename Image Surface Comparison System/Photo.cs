@@ -25,6 +25,7 @@ namespace Image_Surface_Comparison_System
 
             selectedPixels = new bool[width, height];
             selectedPixelsCount = 0;
+
         }
 
         public int GetIndex(int x, int y)
