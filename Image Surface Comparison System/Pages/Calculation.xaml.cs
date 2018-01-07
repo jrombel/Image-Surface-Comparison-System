@@ -105,6 +105,7 @@ namespace Image_Surface_Comparison_System
                 wandTool = new WandTool(photo, photoOrginal, selectedMode, (int)x, (int)y, (bool)photoDegreeToleranceAdjacent_cb.IsChecked, selected, (byte)photoDegreeTolerance_s.Value);
 
                 image_img.Source = wandTool.Wand().photo;
+                Base.Save(photo, lastFilename);
 
                 if (selectedMode == 0)
                 {
@@ -117,6 +118,8 @@ namespace Image_Surface_Comparison_System
                 BrushTool brushTool;
                 brushTool = new BrushTool(photo, photoOrginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
                 image_img.Source = brushTool.Brush().photo;
+
+                Base.Save(photo, lastFilename);
 
                 if (selectedMode == 0)
                 {
@@ -177,22 +180,15 @@ namespace Image_Surface_Comparison_System
         {
             if (selectedTool == 1 && brushDown == true)
             {
-                Image image = (Image)sender;
 
-                Photo photo;
-                Photo orginal;
-
-                photo = this.photo;
-                orginal = photoOrginal;
-
-                double x = Math.Floor(e.GetPosition(image).X * photo.photo.PixelWidth / image.ActualWidth);
-                double y = Math.Floor(e.GetPosition(image).Y * photo.photo.PixelHeight / image.ActualHeight);
+                double x = Math.Floor(e.GetPosition(image_img).X * photo.photo.PixelWidth / image_img.ActualWidth);
+                double y = Math.Floor(e.GetPosition(image_img).Y * photo.photo.PixelHeight / image_img.ActualHeight);
 
                 if (Mouse.LeftButton == MouseButtonState.Pressed)
                 {
                     BrushTool brushTool;
-                    brushTool = new BrushTool(photo, orginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
-                    image.Source = brushTool.Brush().photo;
+                    brushTool = new BrushTool(photo, photoOrginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
+                    image_img.Source = brushTool.Brush().photo;
                 }
                 else
                 {
@@ -346,7 +342,7 @@ namespace Image_Surface_Comparison_System
         {
             Base.albums = new List<String>();
 
-            foreach (var dir in Directory.GetDirectories(Base.path))
+            foreach (var dir in Directory.GetDirectories(Base.path + "\\Photos"))
             {
                 var dirName = new DirectoryInfo(dir).Name;
                 Base.albums.Add(dirName);
@@ -359,7 +355,7 @@ namespace Image_Surface_Comparison_System
         {
             Base.photos = new List<String>();
 
-            foreach (var photo in Directory.GetFiles(Base.path + "\\" + album_cb.SelectedValue).Select(System.IO.Path.GetFileName).ToArray())
+            foreach (var photo in Directory.GetFiles(Base.path + "\\Photos\\" + album_cb.SelectedValue).Select(System.IO.Path.GetFileName).ToArray())
             {
                 Base.photos.Add(photo);
             }
@@ -375,12 +371,18 @@ namespace Image_Surface_Comparison_System
             photo_cb.ItemsSource = Base.photos;
         }
 
+        string lastFilename = "";
+
         private void photo_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (lastFilename != "")
+                Base.Save(photo, lastFilename);
+
             String photoCounter;
             if (photo_cb.SelectedValue != null)
             {
-                string filename = Base.path + "\\" + album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
+                string filename = Base.path + "\\Photos\\" + album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
+                lastFilename = album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
 
                 BitmapImage b = new BitmapImage();
                 b.BeginInit();
@@ -392,6 +394,7 @@ namespace Image_Surface_Comparison_System
                 photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
                 photo = new Photo((BitmapSource)image_img.Source);
                 photoCounter = (photo_cb.SelectedIndex + 1) + " / " + photo_cb.Items.Count;
+
             }
             else
             {
@@ -400,6 +403,42 @@ namespace Image_Surface_Comparison_System
                 photoCounter = "0 / 0";
             }
 
+
+            string[] words = lastFilename.Split('\\');
+            string folder = words[0];
+            string file = (words[1].Split('.'))[0] + ".txt";
+            string fullPath = Base.path + "\\Data\\" + folder + "\\" + file;
+            if (File.Exists(fullPath))
+            {
+                using (StreamReader sr = new StreamReader(fullPath))
+                {
+                    string line;
+                    line = sr.ReadLine();
+                    line = sr.ReadLine();
+                    photo.selectedPixelsCount = Int32.Parse(sr.ReadLine());
+
+                    for (int y = 0; y < photo.height; y++)
+                    {
+                        line = sr.ReadLine();
+                        string[] parts = line.Split(' ');
+                        for (int x = 0; x < photo.width; x++)
+                        {
+                            if (parts[x] == "0")
+                                photo.selectedPixels[x, y] = false;
+                            else
+                            {
+                                photo.selectedPixels[x, y] = true;
+                                int index;
+                                index = photo.GetIndex(x, y);
+                                photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                            }
+                        }
+                    }
+                    image_img.Source = photo.photo;
+
+                }
+            }
+            photo.photo.WritePixels(new Int32Rect(0, 0, (int)photo.width, (int)photo.height), photo.pixelData, photo.widthInByte, 0);
             photo_tb.Text = photoCounter;
         }
 
@@ -443,9 +482,6 @@ namespace Image_Surface_Comparison_System
                             selectPolygon_b.IsEnabled = true;
                             //correctPolygon_b.IsEnabled = true;
 
-                            //funkcja wysyłająca polygon do klasy zaznaczającej!
-
-                            //stoped draw
                             return;
                         }
                     }
@@ -502,6 +538,8 @@ namespace Image_Surface_Comparison_System
             brushTool = new PolygonTool(photo, photoOrginal, selectedMode, points, image_img.ActualWidth, image_img.ActualHeight);
             image_img.Source = brushTool.Polygon().photo;
 
+            Base.Save(photo, lastFilename);
+
             if (selectedMode == 0)
             {
                 selectionAddMode_rb.IsChecked = true;
@@ -525,7 +563,7 @@ namespace Image_Surface_Comparison_System
 
             selectPolygon_b.IsEnabled = false;
             //correctPolygon_b.IsEnabled = false;
-            
+
         }
 
         //private void correctPolygon_b_Click(object sender, RoutedEventArgs e)

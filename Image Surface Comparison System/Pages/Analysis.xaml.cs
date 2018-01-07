@@ -16,7 +16,7 @@ namespace Image_Surface_Comparison_System.Pages
         {
             Base.albums = new List<String>();
 
-            foreach (var dir in Directory.GetDirectories(Base.path))
+            foreach (var dir in Directory.GetDirectories(Base.path + "\\Photos"))
             {
                 var dirName = new DirectoryInfo(dir).Name;
                 Base.albums.Add(dirName);

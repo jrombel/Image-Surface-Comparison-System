@@ -66,15 +66,13 @@ namespace Image_Surface_Comparison_System
 
                     if (y > 0)
                     {
-                        if((amount/2) % 2 == 1 && amount > 0 && visitedPixels[x, y] == false && visitedPixels[x, y - 1] == true)
+                        if ((amount / 2) % 2 == 1 && amount > 0 && visitedPixels[x, y] == false && visitedPixels[x, y - 1] == true)
                         {
                             Fill(x, y);
                             exit = true;
                             break;
                         }
                     }
-
-                    
                 }
                 if (exit == true)
                     break;

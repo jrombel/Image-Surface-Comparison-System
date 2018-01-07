@@ -20,7 +20,7 @@ namespace Image_Surface_Comparison_System
             aboutSystem_p = new AboutSystem();
 
             main_f.Content = calculation_p;
-            Base.path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Photos";
+            Base.path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         }
 
         private void Calculate_Click(object sender, RoutedEventArgs e)
