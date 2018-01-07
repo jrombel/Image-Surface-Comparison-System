@@ -4,10 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Image_Surface_Comparison_System.Pages"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       mc:Ignorable="d" 
       Title="Calculation">
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="b_To_v" />
+        <TextBlock x:Key="CursorGrab" Cursor="/Resources/grabCursor.cur" />
+        <TextBlock x:Key="CursorMagnify" Cursor="/Resources/magnifyCursor.cur" />
         <Style TargetType="{x:Type Expander}">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Background" Value="#5a5a5a" />
@@ -110,13 +113,13 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="Selection Tool" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <RadioButton Name="selectionWandTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Wand" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
+                            <RadioButton Name="selectionWandTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Wand" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}" IsChecked="True">
                                 <Image Source="/Image Surface Comparison System;component/Resources/selectionWandTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
                             <RadioButton Name="selectionBrushTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Brush" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
                                 <Image Source="/Image Surface Comparison System;component/Resources/selectionBrushTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
-                            <RadioButton Name="selectionPolygonTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Polygon" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}" IsChecked="True">
+                            <RadioButton Name="selectionPolygonTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Polygon" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
                                 <Image Source="/Image Surface Comparison System;component/Resources/selectionFreeTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
                         </StackPanel>
@@ -210,14 +213,18 @@
                 <Expander Header="Settings">
                     <StackPanel>
                         <GroupBox Header="Opacity" Background="#6e6e6e">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="0.3*"/>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0" Margin="5" Name="opacity_tb" Text="{Binding ElementName=opacity_s, Path=Value}" TextAlignment="Center"/>
-                                <Slider Grid.Column="1" Margin="5" Name="opacity_s" Value="{Binding ElementName=opacity_tb, Path=Text}" Minimum="0" Maximum="1" TickFrequency="0.01" IsSnapToTickEnabled="True"/>
-                            </Grid>
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.3*"/>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Margin="5" Name="opacity_tb" Text="{Binding ElementName=opacity_s, Path=Value}" TextAlignment="Center"/>
+                                    <Slider Grid.Column="1" Margin="5" Name="opacity_s" Value="{Binding ElementName=opacity_tb, Path=Text}" Minimum="0" Maximum="1" TickFrequency="0.01" IsSnapToTickEnabled="True"/>
+                                </Grid>
+                                <Label />
+                                <xctk:ColorPicker Margin="5" Name="selectedColorPicker_cp" SelectedColorChanged="selectedColorPicker_cp_SelectedColorChanged"/>
+                            </StackPanel>
                         </GroupBox>
                     </StackPanel>
                 </Expander>

@@ -8,6 +8,20 @@
       Title="AboutSystem">
 
     <Grid>
-        <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="50">The user's manual will be here in the future</Label>
+
+        <StackPanel>
+            <TextBlock FontFamily="Segoe UI" FontSize="20" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
+            System created in 2018 by Jakub Rombel
+            </TextBlock>
+
+            <TextBlock FontFamily="Segoe UI" FontSize="20" Margin="5,15,5,5" Foreground="White" TextWrapping="WrapWithOverflow">
+            The system was created as a result of the graduation thesis at the Faculty of Computer Science of the Bialystok University of Technology
+            </TextBlock>
+
+            <TextBlock FontFamily="Segoe UI" FontSize="40" Margin="5,15,5,5" Foreground="White" TextWrapping="WrapWithOverflow">
+            The user's manual will be here in the future
+            </TextBlock>
+        </StackPanel>
+        
     </Grid>
 </Page>

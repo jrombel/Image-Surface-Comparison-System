@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Image_Surface_Comparison_System.Pages"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       mc:Ignorable="d" 
       Title="Analysis">
 
@@ -16,12 +17,24 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Label Content="Album: " VerticalAlignment="Center" Foreground="White"/>
             <ComboBox Name="album_cb" Margin="5" VerticalAlignment="Center" DropDownOpened="album_cb_DropDownOpened" SelectionChanged="album_cb_SelectionChanged" Width="200"/>
+            <Label Content="Type: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
+            <ComboBox Name="type_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged" Width="100">
+                <ComboBoxItem Name="percentages_cbi" Content="Percentages" IsSelected="True"/>
+                <ComboBoxItem Name="pixels_cbi" Content="Pixels" />
+            </ComboBox>
             <Label Content="Order: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
             <ComboBox Name="order_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged" Width="60">
-                <ComboBoxItem Name="name_cbi" Content="Name" />
+                <ComboBoxItem Name="name_cbi" Content="Name" IsSelected="True"/>
                 <ComboBoxItem Name="date_cbi" Content="Date" />
             </ComboBox>
         </StackPanel>
-        <Grid Grid.Row="1" Background="Red"></Grid>
+        <lvc:CartesianChart Grid.Row="1" Margin="5">
+            <lvc:CartesianChart.Series>
+                <lvc:LineSeries Values="{Binding Values}" 
+                                PointGeometrySize="20" 
+                                PointForeground="White"
+                                Configuration="{Binding Mapper}"/>
+            </lvc:CartesianChart.Series>
+        </lvc:CartesianChart>
     </Grid>
 </Page>

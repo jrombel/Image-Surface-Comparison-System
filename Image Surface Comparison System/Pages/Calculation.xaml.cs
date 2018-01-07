@@ -40,7 +40,7 @@ namespace Image_Surface_Comparison_System
         {
             InitializeComponent();
 
-            selectedTool = 2;
+            selectedTool = 0;
             selectedMode = 0;
 
             photoDegreeTolerance_s.Value = 20;
@@ -274,6 +274,10 @@ namespace Image_Surface_Comparison_System
             {
                 if (selectedTool == 1)
                     Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / photo.photo.PixelWidth));
+                else if (selectedTool == 3)
+                    Cursor = ((TextBlock)this.Resources["CursorGrab"]).Cursor;
+                else if (selectedTool == 4)
+                    Cursor = ((TextBlock)this.Resources["CursorMagnify"]).Cursor;
             }
             else
             {
@@ -416,7 +420,7 @@ namespace Image_Surface_Comparison_System
 
         private void photo_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lastFilename != "")
+            if (lastFilename != "" && photo != null)
                 Base.Save(photo, lastFilename);
 
             String photoCounter;
@@ -609,7 +613,17 @@ namespace Image_Surface_Comparison_System
         private void UndoTool_Click(object sender, RoutedEventArgs e)
         {
             photo.Clone(undoPhoto);
+            ReloadPhoto();
+        }
 
+        private void selectedColorPicker_cp_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        {
+            Base.selectedColor = new Color(selectedColorPicker_cp.SelectedColor.Value.R, selectedColorPicker_cp.SelectedColor.Value.G, selectedColorPicker_cp.SelectedColor.Value.B);
+            ReloadPhoto();
+        }
+
+        private void ReloadPhoto()
+        {
             for (int y = 0; y < photo.height; y++)
             {
                 for (int x = 0; x < photo.width; x++)
@@ -625,7 +639,6 @@ namespace Image_Surface_Comparison_System
 
             photo.photo.WritePixels(new Int32Rect(0, 0, (int)photo.width, (int)photo.height), photo.pixelData, photo.widthInByte, 0);
             image_img.Source = photo.photo;
-            //image_img.Dispatcher.BeginInvoke(new Action(() => image_img.Source = photo.photo));
         }
     }
 }
