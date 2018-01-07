@@ -118,38 +118,6 @@ namespace Image_Surface_Comparison_System
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2, y2 + 1));
                 }
-
-                //if (x2 - 1 >= 0 && y2 - 1 >= 0 && visitedPixels[x2 - 1, y2 - 1] == false)
-                //{
-                //    index = orginal.GetIndex(x2 - 1, y2 - 1);
-                //    Color tmp = orginal.GetColor(index);
-                //    if (Color.Difference(tmp, comparative) < degree)
-                //        stack.Push(new Tuple<int, int>(x2 - 1, y2 - 1));
-                //}
-
-                //if (x2 + 1 < orginal.width && y2 - 1 >= 0 && visitedPixels[x2 + 1, y2 - 1] == false)
-                //{
-                //    index = orginal.GetIndex(x2 + 1, y2 - 1);
-                //    Color tmp = orginal.GetColor(index);
-                //    if (Color.Difference(tmp, comparative) < degree)
-                //        stack.Push(new Tuple<int, int>(x2 + 1, y2 - 1));
-                //}
-
-                //if (x2 - 1 >= 0 && y2 + 1 < orginal.height && visitedPixels[x2 - 1, y2 + 1] == false)
-                //{
-                //    index = orginal.GetIndex(x2 - 1, y2 + 1);
-                //    Color tmp = orginal.GetColor(index);
-                //    if (Color.Difference(tmp, comparative) < degree)
-                //        stack.Push(new Tuple<int, int>(x2 - 1, y2 + 1));
-                //}
-
-                //if (x2 + 1 < orginal.width && y2 + 1 < orginal.height && visitedPixels[x2 + 1, y2 + 1] == false)
-                //{
-                //    index = orginal.GetIndex(x2 + 1, y2 + 1);
-                //    Color tmp = orginal.GetColor(index);
-                //    if (Color.Difference(tmp, comparative) < degree)
-                //        stack.Push(new Tuple<int, int>(x2 + 1, y2 + 1));
-                //}
             }
         }
     }

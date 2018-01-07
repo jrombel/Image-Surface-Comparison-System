@@ -28,6 +28,11 @@ namespace Image_Surface_Comparison_System
 
         }
 
+        public Photo()
+        {
+
+        }
+
         public int GetIndex(int x, int y)
         {
             return y * width + x;
@@ -36,6 +41,17 @@ namespace Image_Surface_Comparison_System
         public Color GetColor(int index)
         {
             return new Color((byte)((pixelData[index] & 0xff0000) >> 0x10), (byte)((pixelData[index] & 0xff00) >> 8), (byte)(pixelData[index] & 0xff));
+        }
+
+        public void Clone(Photo clonedPhoto)
+        {
+            this.photo = clonedPhoto.photo;
+            this.height = clonedPhoto.height;
+            this.width = clonedPhoto.width;
+            this.pixelData = (uint[])clonedPhoto.pixelData.Clone();
+            this.widthInByte = clonedPhoto.widthInByte;
+            this.selectedPixels = (bool[,])clonedPhoto.selectedPixels;
+            this.selectedPixelsCount = clonedPhoto.selectedPixelsCount;
         }
     }
 }

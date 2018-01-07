@@ -41,7 +41,7 @@ namespace Image_Surface_Comparison_System
                 Array.Clear(patient.selectedPixels, 0, patient.selectedPixels.Length);
                 Array.Clear(visitedPixels, 0, visitedPixels.Length);
             }
-            
+
             for (int i = 0; i < points.Count; i++)
             {
                 if (i + 1 != points.Count)
@@ -49,7 +49,7 @@ namespace Image_Surface_Comparison_System
                 else
                     line(points[i], points[0]);
             }
-            
+
             bool last = false;
             int amount;
             bool exit = false;
