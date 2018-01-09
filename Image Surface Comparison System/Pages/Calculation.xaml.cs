@@ -107,7 +107,6 @@ namespace Image_Surface_Comparison_System
                 WandTool wandTool;
                 selected = new Color(photoOrginal.GetColor(index));
 
-                undoPhoto.Clone(photo);
                 wandTool = new WandTool(photo, photoOrginal, selectedMode, (int)x, (int)y, (bool)photoDegreeToleranceAdjacent_cb.IsChecked, selected, (byte)photoDegreeTolerance_s.Value);
                 image_img.Source = wandTool.Wand().photo;
                 Base.Save(photo, lastFilename);
@@ -122,7 +121,6 @@ namespace Image_Surface_Comparison_System
             {
                 BrushTool brushTool;
 
-                undoPhoto.Clone(photo);
                 brushTool = new BrushTool(photo, photoOrginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
                 image_img.Source = brushTool.Brush().photo;
 
@@ -448,7 +446,6 @@ namespace Image_Surface_Comparison_System
                 photoCounter = "0 / 0";
             }
 
-
             string[] words = lastFilename.Split('\\');
             string folder = words[0];
             string file = (words[1].Split('.'))[0] + ".txt";
@@ -461,6 +458,7 @@ namespace Image_Surface_Comparison_System
                     line = sr.ReadLine();
                     line = sr.ReadLine();
                     photo.selectedPixelsCount = Int32.Parse(sr.ReadLine());
+                    line = sr.ReadLine();
 
                     for (int y = 0; y < photo.height; y++)
                     {
@@ -580,7 +578,6 @@ namespace Image_Surface_Comparison_System
         {
             PolygonTool brushTool;
 
-            undoPhoto.Clone(photo);
             brushTool = new PolygonTool(photo, photoOrginal, selectedMode, points, image_img.ActualWidth, image_img.ActualHeight);
             image_img.Source = brushTool.Polygon().photo;
 
@@ -612,8 +609,11 @@ namespace Image_Surface_Comparison_System
 
         private void UndoTool_Click(object sender, RoutedEventArgs e)
         {
-            photo.Clone(undoPhoto);
-            ReloadPhoto();
+            if (undoPhoto != null && photo != null)
+            {
+                photo.Clone(undoPhoto);
+                ReloadPhoto();
+            }
         }
 
         private void selectedColorPicker_cp_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
@@ -639,6 +639,49 @@ namespace Image_Surface_Comparison_System
 
             photo.photo.WritePixels(new Int32Rect(0, 0, (int)photo.width, (int)photo.height), photo.pixelData, photo.widthInByte, 0);
             image_img.Source = photo.photo;
+        }
+
+        private void photoProcessing_btn(object sender, RoutedEventArgs e)
+        {
+            if (photo != null)
+            {
+                undoPhoto.Clone(photo);
+
+                if (photoProcessing_cb.SelectedIndex == 0) //Filtering
+                {
+
+                    if (filteringPhotoProcessing.SelectedIndex == 0)
+                        photo = PhotoProcessing.Smoothing(photoOrginal);
+                    else if (filteringPhotoProcessing.SelectedIndex == 1)
+                        photo = PhotoProcessing.Median(photoOrginal);
+                    else if (filteringPhotoProcessing.SelectedIndex == 2)
+                        photo = PhotoProcessing.EdgeDetect(photoOrginal);
+                    else if (filteringPhotoProcessing.SelectedIndex == 3)
+                        photo = PhotoProcessing.HighPassSharpening(photoOrginal);
+                    else if (filteringPhotoProcessing.SelectedIndex == 4)
+                        photo = PhotoProcessing.GaussianBlur(photoOrginal);
+
+                }
+                else if (photoProcessing_cb.SelectedIndex == 1) //Binaryzation
+                {
+                    photo = PhotoProcessing.Binaryzation(photoOrginal, (int)manuallyValue_s.Value);
+                }
+                //else if (photoProcessing_cb.SelectedIndex == 2) //Morphology
+                //{
+                //    if (morphologyPhotoProcessing.SelectedIndex == 0)
+                //        photo = PhotoProcessing.Dilation(photoOrginal);
+                //    else if (morphologyPhotoProcessing.SelectedIndex == 1)
+                //        photo = PhotoProcessing.Erosion(photoOrginal);
+                //    else if (morphologyPhotoProcessing.SelectedIndex == 2)
+                //        photo = PhotoProcessing.Opening(photoOrginal);
+                //    else if (morphologyPhotoProcessing.SelectedIndex == 3)
+                //        photo = PhotoProcessing.Closing(photoOrginal);
+                //}
+
+                //photoOrginal = photo;
+                ReloadPhoto();
+                //wyświetlanie obrazu w image_img
+            }
         }
     }
 }

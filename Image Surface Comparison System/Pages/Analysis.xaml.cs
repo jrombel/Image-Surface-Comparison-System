@@ -8,40 +8,43 @@ using LiveCharts.Configurations;
 using System.Windows.Media;
 using System.Windows;
 using System.Linq;
+using LiveCharts.Wpf;
 
 namespace Image_Surface_Comparison_System.Pages
 {
     public partial class Analysis : Page
     {
+        ChartValues<ObservableValue> ValuesTmp = new ChartValues<ObservableValue>();
+        List<String> LabelsTmp = new List<String>();
+
+        public SeriesCollection SeriesCollection { get; set; }
+        public string[] Labels { get; set; }
+        public Func<double, string> Formatter { get; set; }
+
         public Analysis()
         {
             InitializeComponent();
 
-            var r = new Random();
-            Values = new ChartValues<ObservableValue>();
+            SeriesCollection = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Values = ValuesTmp,
+                    DataLabels = true,
+                    LabelPoint = point => Math.Round(point.Y, 2) + "%",
+                    LineSmoothness = 0,
+                    Foreground = Brushes.White
+                }
+            };
 
-            //Lets define a custom mapper, to set fill and stroke
-            //according to chart values...
-            Mapper = Mappers.Xy<ObservableValue>()
-                .X((item, index) => index)
-                .Y(item => item.Value)
-                .Fill(item => item.Value > 200 ? DangerBrush : null)
-                .Stroke(item => item.Value > 200 ? DangerBrush : null);
-
-            Formatter = x => x + " ms";
-
-            DangerBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(238, 83, 80));
-
+            Formatter = value => value + ".00K items";
             DataContext = this;
         }
 
-        public Func<double, string> Formatter { get; set; }
-        public ChartValues<ObservableValue> Values { get; set; }
-        public Brush DangerBrush { get; set; }
-        public CartesianMapper<ObservableValue> Mapper { get; set; }
-
-
-
+        private void Chart_OnDataClick(object sender, ChartPoint point)
+        {
+            MessageBox.Show("You clicked " + point.X + ", " + point.Y);
+        }
 
         private void album_cb_DropDownOpened(object sender, EventArgs e)
         {
@@ -58,24 +61,41 @@ namespace Image_Surface_Comparison_System.Pages
 
         private void album_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Values.Clear();
+            DrawGraph();
+        }
+
+        private void UpdateClick(object sender, RoutedEventArgs e)
+        {
+            DrawGraph();
+        }
+
+        private void DrawGraph()
+        {
+            ValuesTmp.Clear();
+            LabelsTmp.Clear();
 
             string path = Base.path + "\\Data\\" + album_cb.SelectedValue;
 
-            foreach (string photo in Directory.GetFiles(path).Select(System.IO.Path.GetFileName).ToArray())
+            if (Directory.Exists(path))
             {
-                using (StreamReader sr = new StreamReader(path + "\\" + photo))
+                foreach (string photo in Directory.GetFiles(path).Select(Path.GetFileName).ToArray())
                 {
-                    sr.ReadLine();
-                    sr.ReadLine();
-                    Values.Add(new ObservableValue(Int32.Parse(sr.ReadLine())));           
+                    using (StreamReader sr = new StreamReader(path + "\\" + photo))
+                    {
+                        sr.ReadLine();
+                        sr.ReadLine();
+                        //if (percentages_cbi.IsSelected == true)
+                        ValuesTmp.Add(new ObservableValue(((Double.Parse(sr.ReadLine())) / (Double.Parse(sr.ReadLine()))) * 100));
+                        //else if (pixels_cbi.IsSelected == true)
+                        //    ValuesTmp.Add(new ObservableValue(Int32.Parse(sr.ReadLine())));
+
+                        LabelsTmp.Add(photo);
+                    }
                 }
+                label_a.Labels = LabelsTmp.ToArray();
             }
-        }
-
-        private void order_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            else
+                MessageBox.Show("No areas selected!");
         }
     }
 }

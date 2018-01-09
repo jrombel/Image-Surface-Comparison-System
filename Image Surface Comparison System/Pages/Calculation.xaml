@@ -222,7 +222,7 @@
                                     <TextBox Grid.Column="0" Margin="5" Name="opacity_tb" Text="{Binding ElementName=opacity_s, Path=Value}" TextAlignment="Center"/>
                                     <Slider Grid.Column="1" Margin="5" Name="opacity_s" Value="{Binding ElementName=opacity_tb, Path=Text}" Minimum="0" Maximum="1" TickFrequency="0.01" IsSnapToTickEnabled="True"/>
                                 </Grid>
-                                <Label />
+                                <Label Content="Selection color"/>
                                 <xctk:ColorPicker Margin="5" Name="selectedColorPicker_cp" SelectedColorChanged="selectedColorPicker_cp_SelectedColorChanged"/>
                             </StackPanel>
                         </GroupBox>
@@ -231,16 +231,42 @@
 
                 <Expander Header="Photo processing">
                     <StackPanel>
-                        <ComboBox Margin="5">
-                            <ComboBoxItem Content="Filtering"/>
-                            <ComboBoxItem Content="Binaryzation"/>
-                            <ComboBoxItem Content="Morphology"/>
+                        <ComboBox Name="photoProcessing_cb" Margin="5">
+                            <ComboBoxItem Name="filteringPhotoProcessing_cbi" Content="Filtering" IsSelected="True"/>
+                            <ComboBoxItem Name="binaryzationPhotoProcessing_cbi" Content="Binaryzation"/>
+                            <!--<ComboBoxItem Name="morphologyPhotoProcessing_cbi" Content="Morphology"/>-->
                         </ComboBox>
 
-                        <GroupBox Header="Options" Background="#6e6e6e" Margin="5,-12,5,5">
-
+                        <GroupBox Header="Filtering options" Background="#6e6e6e" Margin="5,-12,5,5" Visibility="{Binding ElementName=filteringPhotoProcessing_cbi, Path=IsSelected, Converter={StaticResource b_To_v}}">
+                            <ComboBox Name="filteringPhotoProcessing" Margin="5">
+                                <ComboBoxItem Content="Smoothing"/>
+                                <ComboBoxItem Content="Median"/>
+                                <ComboBoxItem Content="Edge detect"/>
+                                <ComboBoxItem Content="Sharpening"/>
+                                <ComboBoxItem Content="Gaussian Blur"/>
+                            </ComboBox>
                         </GroupBox>
-                        <Button Content="Apply" Margin="5"/>
+
+                        <GroupBox Header="Binaryzation options" Background="#6e6e6e" Margin="5,-12,5,5" Visibility="{Binding ElementName=binaryzationPhotoProcessing_cbi, Path=IsSelected, Converter={StaticResource b_To_v}}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Threshold Level: " VerticalAlignment="Center"/>
+                                    <Label Content="{Binding ElementName=manuallyValue_s, Path=Value}" Width="30" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Slider Name="manuallyValue_s" Value="128" Minimum="0" Maximum="255" Width="125" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center" Margin="5" />
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!--<GroupBox Header="Morphology options" Background="#6e6e6e" Margin="5,-12,5,5" Visibility="{Binding ElementName=morphologyPhotoProcessing_cbi, Path=IsSelected, Converter={StaticResource b_To_v}}">
+                            <ComboBox Name="morphologyPhotoProcessing" Margin="5">
+                                <ComboBoxItem Content="Dilation"/>
+                                <ComboBoxItem Content="Erosion"/>
+                                <ComboBoxItem Content="Opening"/>
+                                <ComboBoxItem Content="Closing"/>
+                            </ComboBox>
+                        </GroupBox>-->
+
+                        <Button Content="Apply" Margin="5" Click="photoProcessing_btn"/>
                     </StackPanel>
                 </Expander>
 

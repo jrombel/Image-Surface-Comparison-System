@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows;
 
 namespace Image_Surface_Comparison_System
 {
@@ -33,6 +32,7 @@ namespace Image_Surface_Comparison_System
                 sw.WriteLine(file);
                 sw.WriteLine(length);
                 sw.WriteLine(photo.selectedPixelsCount);
+                sw.WriteLine(photo.pixelData.Length);
 
                 for (int y = 0; y < photo.height; y++)
                 {

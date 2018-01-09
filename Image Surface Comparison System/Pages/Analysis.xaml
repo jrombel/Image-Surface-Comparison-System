@@ -11,30 +11,42 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#5a5a5a">
             <Label Content="Album: " VerticalAlignment="Center" Foreground="White"/>
             <ComboBox Name="album_cb" Margin="5" VerticalAlignment="Center" DropDownOpened="album_cb_DropDownOpened" SelectionChanged="album_cb_SelectionChanged" Width="200"/>
-            <Label Content="Type: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
-            <ComboBox Name="type_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged" Width="100">
-                <ComboBoxItem Name="percentages_cbi" Content="Percentages" IsSelected="True"/>
-                <ComboBoxItem Name="pixels_cbi" Content="Pixels" />
-            </ComboBox>
-            <Label Content="Order: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
+
+            <Button Content="Update" Margin="5" Padding="3" Click="UpdateClick" />
+            <!--<Label Content="Order: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
             <ComboBox Name="order_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged" Width="60">
                 <ComboBoxItem Name="name_cbi" Content="Name" IsSelected="True"/>
                 <ComboBoxItem Name="date_cbi" Content="Date" />
             </ComboBox>
+            <Label Content="Type: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
+            <ComboBox Name="type_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged" Width="100">
+                <ComboBoxItem Name="percentages_cbi" Content="Percent" IsSelected="True"/>
+                <ComboBoxItem Name="pixels_cbi" Content="Pixels" />
+            </ComboBox>-->
         </StackPanel>
-        <lvc:CartesianChart Grid.Row="1" Margin="5">
-            <lvc:CartesianChart.Series>
-                <lvc:LineSeries Values="{Binding Values}" 
-                                PointGeometrySize="20" 
-                                PointForeground="White"
-                                Configuration="{Binding Mapper}"/>
-            </lvc:CartesianChart.Series>
+
+        <Separator Grid.Row="1" Margin="0" />
+
+        <lvc:CartesianChart Name="label_cc" Grid.Row="2" Series="{Binding SeriesCollection}" DataClick="Chart_OnDataClick">
+
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Name="label_a" LabelsRotation="20" Position="LeftBottom" Title="Photo" Foreground="White">
+                    <lvc:Axis.Separator >
+                        <lvc:Separator Step="1" />
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Percent" Position="LeftBottom" MinValue="0" Foreground="White" />
+            </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
+
     </Grid>
 </Page>

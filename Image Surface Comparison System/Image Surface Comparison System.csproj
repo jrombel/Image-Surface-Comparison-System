@@ -108,6 +108,7 @@
       <DependentUpon>Calculation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Photo.cs" />
+    <Compile Include="PhotoProcessing.cs" />
     <Compile Include="PolygonTool.cs" />
     <Compile Include="WandTool.cs" />
     <Page Include="MainWindow.xaml">
