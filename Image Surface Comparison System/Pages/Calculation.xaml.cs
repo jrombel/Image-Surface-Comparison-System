@@ -51,40 +51,16 @@ namespace Image_Surface_Comparison_System
 
             lineTmp = new Line();
             lineTmp.Margin = new Thickness(0, 0, 0, 0);
-            lineTmp.Stroke = Brushes.Black;
+            lineTmp.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
             lineTmp.StrokeThickness = 0.5;
             canvas_c.Children.Add(lineTmp);
 
             undoPhoto = new Photo();
         }
 
-        private void LoadImage()
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-            dlg.Filter = "Image Files| *.jpg; *.jpeg; *.png;|JPEG Files (*.jpeg,*.jpg)| *.jpg; *.jpeg;|PNG Files (*.png)|*.png;|GIF Files (*.gif)|*.gif;";
-
-            Nullable<bool> result = dlg.ShowDialog();
-
-            if (result == true)
-            {
-                string filename = dlg.FileName;
-
-                BitmapImage b = new BitmapImage();
-                b.BeginInit();
-                b.UriSource = new Uri(filename);
-                b.EndInit();
-
-                image_img.Source = b;
-                imageOrginal_img.Source = b;
-                photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
-                photo = new Photo((BitmapSource)image_img.Source);
-            }
-        }
-
         private void Photo_Click(object sender, RoutedEventArgs e)
         {
-            LoadImage();
+            //LoadImage();
         }
 
         private void Image_img_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -92,7 +68,7 @@ namespace Image_Surface_Comparison_System
 
             if (image_img.Source.ToString() == "pack://application:,,,/Image Surface Comparison System;component/Resources/loadPhoto_img.png")
             {
-                LoadImage();
+                //LoadImage();
                 return;
             }
 
@@ -257,6 +233,51 @@ namespace Image_Surface_Comparison_System
             }
         }
 
+        private void canvas_c_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (selectedTool == 2 && selectedPolygonState == true)
+            {
+                var mouseWasDownOn = e.Source as FrameworkElement;
+                if (mouseWasDownOn != null && mouseWasDownOn.ToString() != "System.Windows.Shapes.Ellipse")
+                {
+                    if (points.Count > 1)
+                    {
+                        if (e.GetPosition(canvas_c).X > (points[0].X - 2) && e.GetPosition(canvas_c).X < (points[0].X + 2) &&
+                            e.GetPosition(canvas_c).Y > (points[0].Y - 2) && e.GetPosition(canvas_c).Y < (points[0].Y + 2))
+                        {
+                            lineTmp.X2 = points[0].X;
+                            lineTmp.Y2 = points[0].Y;
+
+                            selectedPolygonState = false;
+
+                            selectPolygon_b.IsEnabled = true;
+
+                            return;
+                        }
+                    }
+                    AddPoint(e.GetPosition(canvas_c).X, e.GetPosition(canvas_c).Y);
+                }
+                else if (mouseWasDownOn != null && mouseWasDownOn.ToString() == "System.Windows.Shapes.Ellipse")
+                {
+                    if (points.Count > 1)
+                    {
+                        if (e.GetPosition(canvas_c).X > (points[0].X - 2) && e.GetPosition(canvas_c).X < (points[0].X + 2) &&
+                            e.GetPosition(canvas_c).Y > (points[0].Y - 2) && e.GetPosition(canvas_c).Y < (points[0].Y + 2))
+                        {
+                            lineTmp.X2 = points[0].X;
+                            lineTmp.Y2 = points[0].Y;
+
+                            selectedPolygonState = false;
+
+                            selectPolygon_b.IsEnabled = true;
+
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         private void image_img_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (selectedTool == 3)
@@ -277,10 +298,10 @@ namespace Image_Surface_Comparison_System
                 else if (selectedTool == 4)
                     Cursor = ((TextBlock)this.Resources["CursorMagnify"]).Cursor;
             }
-            else
-            {
-                this.Cursor = Cursors.Hand;
-            }
+            //else
+            //{
+            //    this.Cursor = Cursors.Hand;
+            //}
         }
 
         private void Image_img_MouseLeave(object sender, MouseEventArgs e)
@@ -314,48 +335,6 @@ namespace Image_Surface_Comparison_System
                 Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / photo.photo.PixelWidth));
         }
 
-        Cursor CreateCursor(double rx, double ry)
-        {
-            DrawingVisual vis = new DrawingVisual();
-            DrawingContext dc = vis.RenderOpen();
-
-            SolidColorBrush brush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
-
-            if (squareShape_rb.IsChecked == true)
-                dc.DrawRectangle(brush, new Pen(Brushes.Black, 1), new Rect(0, 0, rx, ry));
-            else
-                dc.DrawEllipse(brush, new Pen(Brushes.Black, 1), new Point(rx / 2, ry / 2), rx / 2, ry / 2);
-            dc.Close();
-
-            RenderTargetBitmap rtb = new RenderTargetBitmap(512, 512, 96, 96, PixelFormats.Pbgra32);
-            rtb.Render(vis);
-
-            MemoryStream ms1 = new MemoryStream();
-
-            PngBitmapEncoder penc = new PngBitmapEncoder();
-            penc.Frames.Add(BitmapFrame.Create(rtb));
-            penc.Save(ms1);
-
-            byte[] pngBytes = ms1.ToArray();
-            int size = pngBytes.GetLength(0);
-
-            MemoryStream ms = new MemoryStream();
-            ms.Write(BitConverter.GetBytes((Int16)0), 0, 2);
-            ms.Write(BitConverter.GetBytes((Int16)2), 0, 2);
-            ms.Write(BitConverter.GetBytes((Int16)1), 0, 2);
-            ms.WriteByte(32);
-            ms.WriteByte(32);
-            ms.WriteByte(0);
-            ms.WriteByte(0);
-            ms.Write(BitConverter.GetBytes((Int16)(rx / 2.0)), 0, 2);
-            ms.Write(BitConverter.GetBytes((Int16)(ry / 2.0)), 0, 2);
-            ms.Write(BitConverter.GetBytes(size), 0, 4);
-            ms.Write(BitConverter.GetBytes((Int32)22), 0, 4);
-            ms.Write(pngBytes, 0, size);
-            ms.Seek(0, SeekOrigin.Begin);
-
-            return new Cursor(ms);
-        }
 
         private void selectionToolChange_rb_Click(object sender, RoutedEventArgs e)
         {
@@ -505,33 +484,6 @@ namespace Image_Surface_Comparison_System
                 brushShape = 1;
         }
 
-        private void canvas_c_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (selectedTool == 2 && selectedPolygonState == true)
-            {
-                var mouseWasDownOn = e.Source as FrameworkElement;
-                if (mouseWasDownOn != null && mouseWasDownOn.ToString() != "System.Windows.Shapes.Ellipse")
-                {
-                    if (points.Count > 1)
-                    {
-                        if (e.GetPosition(canvas_c).X > (points[0].X - 2) && e.GetPosition(canvas_c).X < (points[0].X + 2) &&
-                            e.GetPosition(canvas_c).Y > (points[0].Y - 2) && e.GetPosition(canvas_c).Y < (points[0].Y + 2))
-                        {
-                            lineTmp.X2 = points[0].X;
-                            lineTmp.Y2 = points[0].Y;
-
-                            selectedPolygonState = false;
-
-                            selectPolygon_b.IsEnabled = true;
-
-                            return;
-                        }
-                    }
-                    AddPoint(e.GetPosition(canvas_c).X, e.GetPosition(canvas_c).Y);
-                }
-            }
-        }
-
         private void AddPoint(double x, double y)
         {
             Ellipse pointStart = new Ellipse();
@@ -539,7 +491,7 @@ namespace Image_Surface_Comparison_System
             pointStart.Height = 2;
             pointStart.Width = 2;
             pointStart.Margin = new Thickness(x - 1, y - 1, 0, 0);
-            pointStart.Stroke = Brushes.Black;
+            pointStart.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
             canvas_c.Children.Add(pointStart);
 
             Point point = new Point(x, y);
@@ -556,7 +508,7 @@ namespace Image_Surface_Comparison_System
                 line.Y1 = point.Y;
                 line.X2 = points[points.Count - 2].X;
                 line.Y2 = points[points.Count - 2].Y;
-                line.Stroke = Brushes.Black;
+                line.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
                 line.StrokeThickness = 0.5;
                 canvas_c.Children.Add(line);
             }
@@ -619,6 +571,7 @@ namespace Image_Surface_Comparison_System
         private void selectedColorPicker_cp_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
             Base.selectedColor = new Color(selectedColorPicker_cp.SelectedColor.Value.R, selectedColorPicker_cp.SelectedColor.Value.G, selectedColorPicker_cp.SelectedColor.Value.B);
+            lineTmp.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
             ReloadPhoto();
         }
 
@@ -683,5 +636,72 @@ namespace Image_Surface_Comparison_System
                 //wyświetlanie obrazu w image_img
             }
         }
+
+        Cursor CreateCursor(double rx, double ry)
+        {
+            DrawingVisual vis = new DrawingVisual();
+            DrawingContext dc = vis.RenderOpen();
+
+            SolidColorBrush brush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
+
+            if (squareShape_rb.IsChecked == true)
+                dc.DrawRectangle(brush, new Pen(Brushes.Black, 1), new Rect(0, 0, rx, ry));
+            else
+                dc.DrawEllipse(brush, new Pen(Brushes.Black, 1), new Point(rx / 2, ry / 2), rx / 2, ry / 2);
+            dc.Close();
+
+            RenderTargetBitmap rtb = new RenderTargetBitmap(512, 512, 96, 96, PixelFormats.Pbgra32);
+            rtb.Render(vis);
+
+            MemoryStream ms1 = new MemoryStream();
+
+            PngBitmapEncoder penc = new PngBitmapEncoder();
+            penc.Frames.Add(BitmapFrame.Create(rtb));
+            penc.Save(ms1);
+
+            byte[] pngBytes = ms1.ToArray();
+            int size = pngBytes.GetLength(0);
+
+            MemoryStream ms = new MemoryStream();
+            ms.Write(BitConverter.GetBytes((Int16)0), 0, 2);
+            ms.Write(BitConverter.GetBytes((Int16)2), 0, 2);
+            ms.Write(BitConverter.GetBytes((Int16)1), 0, 2);
+            ms.WriteByte(32);
+            ms.WriteByte(32);
+            ms.WriteByte(0);
+            ms.WriteByte(0);
+            ms.Write(BitConverter.GetBytes((Int16)(rx / 2.0)), 0, 2);
+            ms.Write(BitConverter.GetBytes((Int16)(ry / 2.0)), 0, 2);
+            ms.Write(BitConverter.GetBytes(size), 0, 4);
+            ms.Write(BitConverter.GetBytes((Int32)22), 0, 4);
+            ms.Write(pngBytes, 0, size);
+            ms.Seek(0, SeekOrigin.Begin);
+
+            return new Cursor(ms);
+        }
+
+        //private void LoadImage()
+        //{
+        //    Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+        //    dlg.Filter = "Image Files| *.jpg; *.jpeg; *.png;|JPEG Files (*.jpeg,*.jpg)| *.jpg; *.jpeg;|PNG Files (*.png)|*.png;|GIF Files (*.gif)|*.gif;";
+
+        //    Nullable<bool> result = dlg.ShowDialog();
+
+        //    if (result == true)
+        //    {
+        //        string filename = dlg.FileName;
+
+        //        BitmapImage b = new BitmapImage();
+        //        b.BeginInit();
+        //        b.UriSource = new Uri(filename);
+        //        b.EndInit();
+
+        //        image_img.Source = b;
+        //        imageOrginal_img.Source = b;
+        //        photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+        //        photo = new Photo((BitmapSource)image_img.Source);
+        //    }
+        //}
     }
 }

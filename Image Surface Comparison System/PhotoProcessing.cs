@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Image_Surface_Comparison_System
 {
     public class PhotoProcessing
     {
-
-
-
         public static Photo Smoothing(Photo photo)
         {
             Photo patient = new Photo();
@@ -215,9 +210,6 @@ namespace Image_Surface_Comparison_System
                     byte red = (Convert.ToByte(Convert.ToInt32(Math.Sqrt(new_x[0] * new_x[0] + new_y[0] * new_y[0])) % 255));
                     byte green = (Convert.ToByte(Convert.ToInt32(Math.Sqrt(new_x[1] * new_x[1] + new_y[1] * new_y[1])) % 255));
                     byte blue = (Convert.ToByte(Convert.ToInt32(Math.Sqrt(new_x[2] * new_x[2] + new_y[2] * new_y[2])) % 255));
-                    //if (edgeNoColor_cb.IsChecked == false)
-                    //   patient.pixelData[photo.GetIndex(i, j)] = (uint)((alpha << 24) | (red << 16) | (green << 8) | (blue << 0));
-                    //else
                     patient.pixelData[photo.GetIndex(i, j)] = (uint)((alpha << 24) | (blue << 16) | (blue << 8) | (blue << 0));
                 }
             }
@@ -380,7 +372,5 @@ namespace Image_Surface_Comparison_System
 
             return patient;
         }
-
-
     }
 }

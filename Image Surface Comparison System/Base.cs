@@ -49,4 +49,3 @@ namespace Image_Surface_Comparison_System
         }
     }
 }
-

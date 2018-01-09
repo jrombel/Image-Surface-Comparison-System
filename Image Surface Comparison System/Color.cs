@@ -30,14 +30,6 @@ namespace Image_Surface_Comparison_System
             RGBtoLAB();
         }
 
-        //public bool Difference(Color color, byte difference)
-        //{
-        //    if (Math.Abs(color.red - this.red) <= difference && Math.Abs(color.green - this.green) <= difference && Math.Abs(color.blue - this.blue) <= difference)
-        //        return true;
-        //    else
-        //        return false;
-        //}
-
         public static int Difference(Color a, Color b)
         {
             double distance = Math.Sqrt(Math.Pow((a.CieL - b.CieL), 2) + Math.Pow((a.CieA - b.CieA), 2) + Math.Pow((a.CieB - b.CieB), 2));
