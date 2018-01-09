@@ -30,6 +30,7 @@ namespace Image_Surface_Comparison_System
         private void Analysis_Click(object sender, RoutedEventArgs e)
         {
             main_f.Content = analysis_p;
+            Base.Save();
         }
         private void AboutSystem_Click(object sender, RoutedEventArgs e)
         {
@@ -38,6 +39,11 @@ namespace Image_Surface_Comparison_System
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void Window_Closed(object sender, System.EventArgs e)
+        {
+            Base.Save();
         }
     }
 }

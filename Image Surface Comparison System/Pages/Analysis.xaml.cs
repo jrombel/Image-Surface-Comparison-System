@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows.Controls;
 using LiveCharts;
 using LiveCharts.Defaults;
-using LiveCharts.Configurations;
 using System.Windows.Media;
 using System.Windows;
 using System.Linq;
@@ -17,33 +16,29 @@ namespace Image_Surface_Comparison_System.Pages
         ChartValues<ObservableValue> ValuesTmp = new ChartValues<ObservableValue>();
         List<String> LabelsTmp = new List<String>();
 
-        public SeriesCollection SeriesCollection { get; set; }
+        public SeriesCollection seriesCollection { get; set; }
+        public LineSeries lineSeries { get; set; }
         public string[] Labels { get; set; }
-        public Func<double, string> Formatter { get; set; }
 
         public Analysis()
         {
             InitializeComponent();
 
-            SeriesCollection = new SeriesCollection
+            lineSeries = new LineSeries
             {
-                new LineSeries
-                {
-                    Values = ValuesTmp,
-                    DataLabels = true,
-                    LabelPoint = point => Math.Round(point.Y, 2) + "%",
-                    LineSmoothness = 0,
-                    Foreground = Brushes.White
-                }
+                Values = ValuesTmp,
+                DataLabels = true,
+                LabelPoint = point => Math.Round(point.Y, 2) + "%",
+                LineSmoothness = 0,
+                Foreground = Brushes.White
             };
 
-            Formatter = value => value + ".00K items";
+            seriesCollection = new SeriesCollection
+            {
+                lineSeries
+            };
+            
             DataContext = this;
-        }
-
-        private void Chart_OnDataClick(object sender, ChartPoint point)
-        {
-            MessageBox.Show("You clicked " + point.X + ", " + point.Y);
         }
 
         private void album_cb_DropDownOpened(object sender, EventArgs e)
@@ -57,6 +52,32 @@ namespace Image_Surface_Comparison_System.Pages
             }
 
             album_cb.ItemsSource = Base.albums;
+        }
+
+        private void PrintClick(object sender, RoutedEventArgs e)
+        {
+            PrintDialog printDialog = new PrintDialog();
+
+            if (printDialog.ShowDialog() == true)
+            {
+                chart.Background = Brushes.White;
+                chart.Foreground = Brushes.Black;
+                chartAxisX.Foreground = Brushes.Black;
+                chartAxisY.Foreground = Brushes.Black;
+                lineSeries.Foreground = Brushes.Black;
+                chartName_l.Visibility = Visibility.Visible;
+                chart.Margin = new Thickness(30);
+
+                printDialog.PrintVisual(chart_grid, "");
+
+                chart.Background = null;
+                chart.Foreground = Brushes.White;
+                chartAxisX.Foreground = Brushes.White;
+                chartAxisY.Foreground = Brushes.White;
+                lineSeries.Foreground = Brushes.White;
+                chartName_l.Visibility = Visibility.Collapsed;
+                chart.Margin = new Thickness(0);
+            }
         }
 
         private void album_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -92,7 +113,7 @@ namespace Image_Surface_Comparison_System.Pages
                         LabelsTmp.Add(photo);
                     }
                 }
-                label_a.Labels = LabelsTmp.ToArray();
+                chartAxisX.Labels = LabelsTmp.ToArray();
             }
             else
                 MessageBox.Show("No areas selected!");

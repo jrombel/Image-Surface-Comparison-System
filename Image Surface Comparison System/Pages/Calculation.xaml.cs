@@ -13,35 +13,29 @@ namespace Image_Surface_Comparison_System
 {
     public partial class Calculation : Page
     {
-        Photo photo;
-        Photo photoOrginal;
-        int selectedTool;
-        int selectedMode;
+        //brush
         bool brushDown = false;
-
-        Point deltaHand;
-        Point originHand;
-
         int brushShape = 0;
-        double scale = 1;
 
+        //poygon
         List<Point> points;
         Line lineTmp;
         bool selectedPolygonState = true;
 
-        Photo undoPhoto;
-
+        //hand & magnifier
+        Point deltaHand;
+        Point originHand;
+        double scale = 1;
         double renderCenterX;
         double renderCenterY;
-
         bool displacement = false;
-
+        
         public Calculation()
         {
             InitializeComponent();
 
-            selectedTool = 0;
-            selectedMode = 0;
+            Base.selectedTool = 0;
+            Base.selectedMode = 0;
 
             photoDegreeTolerance_s.Value = 20;
             opacity_s.Value = 1;
@@ -54,13 +48,6 @@ namespace Image_Surface_Comparison_System
             lineTmp.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, Base.selectedColor.red, Base.selectedColor.green, Base.selectedColor.blue));
             lineTmp.StrokeThickness = 0.5;
             canvas_c.Children.Add(lineTmp);
-
-            undoPhoto = new Photo();
-        }
-
-        private void Photo_Click(object sender, RoutedEventArgs e)
-        {
-            //LoadImage();
         }
 
         private void Image_img_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -72,122 +59,93 @@ namespace Image_Surface_Comparison_System
                 return;
             }
 
-            double x = Math.Floor(e.GetPosition(image_img).X * photo.photo.PixelWidth / image_img.ActualWidth);
-            double y = Math.Floor(e.GetPosition(image_img).Y * photo.photo.PixelHeight / image_img.ActualHeight);
+            double x = Math.Floor(e.GetPosition(image_img).X * Base.photo.photo.PixelWidth / image_img.ActualWidth);
+            double y = Math.Floor(e.GetPosition(image_img).Y * Base.photo.photo.PixelHeight / image_img.ActualHeight);
 
-            int index = photo.GetIndex((int)x, (int)y);
+            int index = Base.photo.GetIndex((int)x, (int)y);
             Color selected = null;
 
-            if (selectedTool == 0)
+            if (Base.selectedTool == 0)
             {
-                WandTool wandTool;
-                selected = new Color(photoOrginal.GetColor(index));
+                selected = new Color(Base.photoOrginal.GetColor(index));
+                WandTool.Wand((int)x, (int)y, selected, (byte)photoDegreeTolerance_s.Value);
 
-                wandTool = new WandTool(photo, photoOrginal, selectedMode, (int)x, (int)y, (bool)photoDegreeToleranceAdjacent_cb.IsChecked, selected, (byte)photoDegreeTolerance_s.Value);
-                image_img.Source = wandTool.Wand().photo;
-                Base.Save(photo, lastFilename);
-
-                if (selectedMode == 0)
+                if (Base.selectedMode == 0)
                 {
                     selectionAddMode_rb.IsChecked = true;
-                    selectedMode = 1;
+                    Base.selectedMode = 1;
                 }
             }
-            else if (selectedTool == 1)
+            else if (Base.selectedTool == 1)
             {
-                BrushTool brushTool;
+                BrushTool.Brush((int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
 
-                brushTool = new BrushTool(photo, photoOrginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
-                image_img.Source = brushTool.Brush().photo;
-
-                Base.Save(photo, lastFilename);
-
-                if (selectedMode == 0)
+                if (Base.selectedMode == 0)
                 {
                     selectionAddMode_rb.IsChecked = true;
-                    selectedMode = 1;
+                    Base.selectedMode = 1;
                 }
 
                 brushDown = true;
             }
-            else if (selectedTool == 2 && selectedPolygonState == true)
+            else if (Base.selectedTool == 2 && selectedPolygonState == true)
             {
                 AddPoint(e.GetPosition(canvas_c).X, e.GetPosition(canvas_c).Y);
             }
-            else if (selectedTool == 3)
+            else if (Base.selectedTool == 3)
             {
                 image_img.CaptureMouse();
                 originHand = e.GetPosition(image_img);
-
             }
-            else if (selectedTool == 4)
+            else if (Base.selectedTool == 4)
             {
+                image_img.RenderTransform = null;
+                var position = e.MouseDevice.GetPosition(image_img);
+
                 if (magnifierZoomInMode.IsChecked == true)
                 {
-                    image_img.RenderTransform = null;
-
-                    var position = e.MouseDevice.GetPosition(image_img);
-
                     scale += 0.1;
-
-                    renderCenterX = position.X;
-                    renderCenterY = position.Y;
-
-                    image_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
-                    imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
-                    canvas_c.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
-                    magnifierZoom_l.Content = scale * 100 + "%";
                 }
                 else
                 {
-                    image_img.RenderTransform = null;
-
-                    var position = e.MouseDevice.GetPosition(image_img);
-
                     if (scale - 0.1 >= 1)
-                    {
                         scale -= 0.1;
-
-                        image_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
-                        imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
-                        canvas_c.RenderTransform = new ScaleTransform(scale, scale, position.X, position.Y);
-                        magnifierZoom_l.Content = scale * 100 + "%";
-                    }
                 }
+
+                renderCenterX = position.X;
+                renderCenterY = position.Y;
+
+                image_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
+                imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
+                canvas_c.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
+                magnifierZoom_l.Content = scale * 100 + "%";
             }
-            double allPixels = photo.width * photo.height;
-            degree_l.Content = string.Format("{0:0.00}", (((double)(photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
+            double allPixels = Base.photo.width * Base.photo.height;
+            degree_l.Content = string.Format("{0:0.00}", (((double)(Base.photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + Base.photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
         }
 
         private void Image_img_MouseMove(object sender, MouseEventArgs e)
         {
-            if (selectedTool == 1 && brushDown == true)
+            if (Base.selectedTool == 1 && brushDown == true)
             {
-
-                double x = Math.Floor(e.GetPosition(image_img).X * photo.photo.PixelWidth / image_img.ActualWidth);
-                double y = Math.Floor(e.GetPosition(image_img).Y * photo.photo.PixelHeight / image_img.ActualHeight);
+                double x = Math.Floor(e.GetPosition(image_img).X * Base.photo.photo.PixelWidth / image_img.ActualWidth);
+                double y = Math.Floor(e.GetPosition(image_img).Y * Base.photo.photo.PixelHeight / image_img.ActualHeight);
 
                 if (Mouse.LeftButton == MouseButtonState.Pressed)
-                {
-                    BrushTool brushTool;
-                    brushTool = new BrushTool(photo, photoOrginal, selectedMode, (int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
-                    image_img.Source = brushTool.Brush().photo;
-                }
+                    BrushTool.Brush((int)x, (int)y, Int32.Parse(brushSize_tb.Text), brushShape);
                 else
-                {
                     brushDown = false;
-                }
             }
-            else if (selectedTool == 2)
+            else if (Base.selectedTool == 2)
             {
                 if (selectedPolygonState == true && points.Count > 0)
                 {
                     lineTmp.X2 = e.GetPosition(canvas_c).X;
-                    lineTmp.Y2 = e.GetPosition(canvas_c).Y;
+                    lineTmp.Y2 = e.GetPosition(canvas_c).Y + 1;
                 }
             }
 
-            else if (selectedTool == 3)
+            else if (Base.selectedTool == 3)
             {
                 if (image_img.IsMouseCaptured)
                 {
@@ -226,16 +184,76 @@ namespace Image_Surface_Comparison_System
                 displacement = false;
             }
 
-            if (photo != null)
+            if (Base.photo != null)
             {
-                double allPixels = photo.width * photo.height;
-                degree_l.Content = string.Format("{0:0.00}", (((double)(photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
+                double allPixels = Base.photo.width * Base.photo.height;
+                degree_l.Content = string.Format("{0:0.00}", (((double)(Base.photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + Base.photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
             }
+        }
+        
+        private void image_img_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (Base.selectedTool == 3)
+            {
+                image_img.ReleaseMouseCapture();
+            }
+        }
+
+        private void Image_img_MouseEnter(object sender, MouseEventArgs e)
+        {
+
+            if (image_img.Source.ToString() != "pack://application:,,,/Image Surface Comparison System;component/Resources/loadPhoto_img.png")
+            {
+                if (Base.selectedTool == 1)
+                    Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / Base.photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / Base.photo.photo.PixelWidth));
+                else if (Base.selectedTool == 2)
+                    Cursor = Cursors.Cross;
+                else if (Base.selectedTool == 3)
+                    Cursor = ((TextBlock)this.Resources["CursorGrab"]).Cursor;
+                else if (Base.selectedTool == 4)
+                    Cursor = ((TextBlock)this.Resources["CursorMagnify"]).Cursor;
+            }
+            //else
+            //{
+            //    this.Cursor = Cursors.Hand;
+            //}
+        }
+
+        private void Image_img_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+            Cursor = null;
+        }
+
+        private void image_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            image_img.RenderTransform = null;
+
+            var position = e.MouseDevice.GetPosition(image_img);
+
+            if (e.Delta > 0)
+                scale += 0.1;
+            else
+            {
+                if (scale - 0.1 >= 1)
+                    scale -= 0.1;
+            }
+
+            renderCenterX = position.X;
+            renderCenterY = position.Y;
+
+            image_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
+            imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
+            canvas_c.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
+            magnifierZoom_l.Content = scale * 100 + "%";
+
+            if (Base.selectedTool == 1)
+                Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / Base.photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / Base.photo.photo.PixelWidth));
         }
 
         private void canvas_c_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (selectedTool == 2 && selectedPolygonState == true)
+            if (Base.selectedTool == 2 && selectedPolygonState == true)
             {
                 var mouseWasDownOn = e.Source as FrameworkElement;
                 if (mouseWasDownOn != null && mouseWasDownOn.ToString() != "System.Windows.Shapes.Ellipse")
@@ -278,86 +296,40 @@ namespace Image_Surface_Comparison_System
             }
         }
 
-        private void image_img_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void canvas_c_MouseMove(object sender, MouseEventArgs e)
         {
-            if (selectedTool == 3)
+            if (Base.selectedTool == 2)
             {
-                image_img.ReleaseMouseCapture();
+                if (selectedPolygonState == true && points.Count > 0)
+                {
+                    lineTmp.X2 = e.GetPosition(canvas_c).X;
+                    lineTmp.Y2 = e.GetPosition(canvas_c).Y;
+                }
             }
         }
-
-        private void Image_img_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-            if (image_img.Source.ToString() != "pack://application:,,,/Image Surface Comparison System;component/Resources/loadPhoto_img.png")
-            {
-                if (selectedTool == 1)
-                    Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / photo.photo.PixelWidth));
-                else if (selectedTool == 3)
-                    Cursor = ((TextBlock)this.Resources["CursorGrab"]).Cursor;
-                else if (selectedTool == 4)
-                    Cursor = ((TextBlock)this.Resources["CursorMagnify"]).Cursor;
-            }
-            //else
-            //{
-            //    this.Cursor = Cursors.Hand;
-            //}
-        }
-
-        private void Image_img_MouseLeave(object sender, MouseEventArgs e)
-        {
-            Mouse.OverrideCursor = null;
-            this.Cursor = null;
-        }
-
-        private void image_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            image_img.RenderTransform = null;
-
-            var position = e.MouseDevice.GetPosition(image_img);
-
-            if (e.Delta > 0)
-                scale += 0.1;
-            else
-            {
-                if (scale - 0.1 >= 1)
-                    scale -= 0.1;
-            }
-
-            renderCenterX = position.X;
-            renderCenterY = position.Y;
-
-            image_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
-            imageOrginal_img.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
-            canvas_c.RenderTransform = new ScaleTransform(scale, scale, renderCenterX, renderCenterY);
-            magnifierZoom_l.Content = scale * 100 + "%";
-            if (selectedTool == 1)
-                Mouse.OverrideCursor = CreateCursor(Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualHeight / photo.photo.PixelHeight), Int32.Parse(brushSize_tb.Text) * scale * (image_img.ActualWidth / photo.photo.PixelWidth));
-        }
-
 
         private void selectionToolChange_rb_Click(object sender, RoutedEventArgs e)
         {
             if (selectionWandTool_rb.IsChecked == true)
-                selectedTool = 0;
+                Base.selectedTool = 0;
             else if (selectionBrushTool_rb.IsChecked == true)
-                selectedTool = 1;
+                Base.selectedTool = 1;
             else if (selectionPolygonTool_rb.IsChecked == true)
-                selectedTool = 2;
+                Base.selectedTool = 2;
             else if (handTool_rb.IsChecked == true)
-                selectedTool = 3;
+                Base.selectedTool = 3;
             else if (magnifierTool_rb.IsChecked == true)
-                selectedTool = 4;
+                Base.selectedTool = 4;
         }
 
         private void selectionModeChange_rb_Click(object sender, RoutedEventArgs e)
         {
             if (selectionNewMode_rb.IsChecked == true)
-                selectedMode = 0;
+                Base.selectedMode = 0;
             else if (selectionAddMode_rb.IsChecked == true)
-                selectedMode = 1;
+                Base.selectedMode = 1;
             else if (selectionSubtractMode_rb.IsChecked == true)
-                selectedMode = 2;
+                Base.selectedMode = 2;
         }
 
         private void album_cb_DropDownOpened(object sender, EventArgs e)
@@ -387,24 +359,22 @@ namespace Image_Surface_Comparison_System
             else
             {
                 photo_cb.SelectedItem = null;
-                photoOrginal = null;
-                photo = null;
+                Base.photoOrginal = null;
+                Base.photo = null;
             }
             photo_cb.ItemsSource = Base.photos;
         }
 
-        string lastFilename = "";
-
         private void photo_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lastFilename != "" && photo != null)
-                Base.Save(photo, lastFilename);
+            if (Base.photo != null)
+                Base.Save();
 
             String photoCounter;
             if (photo_cb.SelectedValue != null)
             {
                 string filename = Base.path + "\\Photos\\" + album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
-                lastFilename = album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
+                Base.lastFilename = album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
 
                 BitmapImage b = new BitmapImage();
                 b.BeginInit();
@@ -413,8 +383,8 @@ namespace Image_Surface_Comparison_System
 
                 image_img.Source = b;
                 imageOrginal_img.Source = b;
-                photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
-                photo = new Photo((BitmapSource)image_img.Source);
+                Base.photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+                Base.photo = new Photo((BitmapSource)image_img.Source);
                 photoCounter = (photo_cb.SelectedIndex + 1) + " / " + photo_cb.Items.Count;
 
             }
@@ -425,7 +395,7 @@ namespace Image_Surface_Comparison_System
                 photoCounter = "0 / 0";
             }
 
-            string[] words = lastFilename.Split('\\');
+            string[] words = Base.lastFilename.Split('\\');
             string folder = words[0];
             string file = (words[1].Split('.'))[0] + ".txt";
             string fullPath = Base.path + "\\Data\\" + folder + "\\" + file;
@@ -436,31 +406,31 @@ namespace Image_Surface_Comparison_System
                     string line;
                     line = sr.ReadLine();
                     line = sr.ReadLine();
-                    photo.selectedPixelsCount = Int32.Parse(sr.ReadLine());
+                    Base.photo.selectedPixelsCount = Int32.Parse(sr.ReadLine());
                     line = sr.ReadLine();
 
-                    for (int y = 0; y < photo.height; y++)
+                    for (int y = 0; y < Base.photo.height; y++)
                     {
                         line = sr.ReadLine();
                         string[] parts = line.Split(' ');
-                        for (int x = 0; x < photo.width; x++)
+                        for (int x = 0; x < Base.photo.width; x++)
                         {
                             if (parts[x] == "0")
-                                photo.selectedPixels[x, y] = false;
+                                Base.photo.selectedPixels[x, y] = false;
                             else
                             {
-                                photo.selectedPixels[x, y] = true;
+                                Base.photo.selectedPixels[x, y] = true;
                                 int index;
-                                index = photo.GetIndex(x, y);
-                                photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                                index = Base.photo.GetIndex(x, y);
+                                Base.photo.pixelData[index] = Color.ToUint(Base.selectedColor);
                             }
                         }
                     }
-                    image_img.Source = photo.photo;
+                    image_img.Source = Base.photo.photo;
 
                 }
             }
-            photo.photo.WritePixels(new Int32Rect(0, 0, (int)photo.width, (int)photo.height), photo.pixelData, photo.widthInByte, 0);
+            Base.photo.photo.WritePixels(new Int32Rect(0, 0, (int)Base.photo.width, (int)Base.photo.height), Base.photo.pixelData, Base.photo.widthInByte, 0);
             photo_tb.Text = photoCounter;
         }
 
@@ -514,31 +484,14 @@ namespace Image_Surface_Comparison_System
             }
         }
 
-        private void canvas_c_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (selectedTool == 2)
-            {
-                if (selectedPolygonState == true && points.Count > 0)
-                {
-                    lineTmp.X2 = e.GetPosition(canvas_c).X;
-                    lineTmp.Y2 = e.GetPosition(canvas_c).Y;
-                }
-            }
-        }
-
         private void selectPolygon_b_Click(object sender, RoutedEventArgs e)
         {
-            PolygonTool brushTool;
+            PolygonTool.Polygon(points, image_img.ActualWidth, image_img.ActualHeight);
 
-            brushTool = new PolygonTool(photo, photoOrginal, selectedMode, points, image_img.ActualWidth, image_img.ActualHeight);
-            image_img.Source = brushTool.Polygon().photo;
-
-            Base.Save(photo, lastFilename);
-
-            if (selectedMode == 0)
+            if (Base.selectedMode == 0)
             {
                 selectionAddMode_rb.IsChecked = true;
-                selectedMode = 1;
+                Base.selectedMode = 1;
             }
 
             clearPolygon_b_Click(sender, e);
@@ -561,9 +514,31 @@ namespace Image_Surface_Comparison_System
 
         private void UndoTool_Click(object sender, RoutedEventArgs e)
         {
-            if (undoPhoto != null && photo != null)
+            if (photo_cb.SelectedValue != null)
             {
-                photo.Clone(undoPhoto);
+                string filename = Base.path + "\\Photos\\" + album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
+                Base.lastFilename = album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
+
+                BitmapImage b = new BitmapImage();
+                b.BeginInit();
+                b.UriSource = new Uri(filename);
+                b.EndInit();
+
+                image_img.Source = b;
+                imageOrginal_img.Source = b;
+                Base.photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+                Base.photo = new Photo((BitmapSource)image_img.Source);
+            }
+        }
+
+        private void ClearSelection_Click(object sender, RoutedEventArgs e)
+        {
+            if (Base.photo != null)
+            {
+                Base.photo.pixelData = (uint[])Base.photoOrginal.pixelData.Clone();
+                Array.Clear(Base.photo.selectedPixels, 0, Base.photo.selectedPixels.Length);
+                Base.photo.selectedPixelsCount = 0;
+
                 ReloadPhoto();
             }
         }
@@ -577,63 +552,50 @@ namespace Image_Surface_Comparison_System
 
         private void ReloadPhoto()
         {
-            for (int y = 0; y < photo.height; y++)
+            if (Base.photo != null)
             {
-                for (int x = 0; x < photo.width; x++)
+                for (int y = 0; y < Base.photo.height; y++)
                 {
-                    if (photo.selectedPixels[x, y] == true)
+                    for (int x = 0; x < Base.photo.width; x++)
                     {
-                        int index;
-                        index = photo.GetIndex(x, y);
-                        photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                        if (Base.photo.selectedPixels[x, y] == true)
+                        {
+                            int index;
+                            index = Base.photo.GetIndex(x, y);
+                            Base.photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                        }
                     }
                 }
-            }
 
-            photo.photo.WritePixels(new Int32Rect(0, 0, (int)photo.width, (int)photo.height), photo.pixelData, photo.widthInByte, 0);
-            image_img.Source = photo.photo;
+                Base.photo.photo.WritePixels(new Int32Rect(0, 0, (int)Base.photo.width, (int)Base.photo.height), Base.photo.pixelData, Base.photo.widthInByte, 0);
+                image_img.Source = Base.photo.photo;
+            }
         }
 
         private void photoProcessing_btn(object sender, RoutedEventArgs e)
         {
-            if (photo != null)
+            if (Base.photo != null)
             {
-                undoPhoto.Clone(photo);
-
                 if (photoProcessing_cb.SelectedIndex == 0) //Filtering
                 {
-
                     if (filteringPhotoProcessing.SelectedIndex == 0)
-                        photo = PhotoProcessing.Smoothing(photoOrginal);
+                        PhotoProcessing.Smoothing();
                     else if (filteringPhotoProcessing.SelectedIndex == 1)
-                        photo = PhotoProcessing.Median(photoOrginal);
+                        PhotoProcessing.Median();
                     else if (filteringPhotoProcessing.SelectedIndex == 2)
-                        photo = PhotoProcessing.EdgeDetect(photoOrginal);
+                        PhotoProcessing.EdgeDetect();
                     else if (filteringPhotoProcessing.SelectedIndex == 3)
-                        photo = PhotoProcessing.HighPassSharpening(photoOrginal);
+                        PhotoProcessing.HighPassSharpening();
                     else if (filteringPhotoProcessing.SelectedIndex == 4)
-                        photo = PhotoProcessing.GaussianBlur(photoOrginal);
-
+                        PhotoProcessing.GaussianBlur();
                 }
                 else if (photoProcessing_cb.SelectedIndex == 1) //Binaryzation
                 {
-                    photo = PhotoProcessing.Binaryzation(photoOrginal, (int)manuallyValue_s.Value);
+                    PhotoProcessing.Binaryzation((int)manuallyValue_s.Value);
                 }
-                //else if (photoProcessing_cb.SelectedIndex == 2) //Morphology
-                //{
-                //    if (morphologyPhotoProcessing.SelectedIndex == 0)
-                //        photo = PhotoProcessing.Dilation(photoOrginal);
-                //    else if (morphologyPhotoProcessing.SelectedIndex == 1)
-                //        photo = PhotoProcessing.Erosion(photoOrginal);
-                //    else if (morphologyPhotoProcessing.SelectedIndex == 2)
-                //        photo = PhotoProcessing.Opening(photoOrginal);
-                //    else if (morphologyPhotoProcessing.SelectedIndex == 3)
-                //        photo = PhotoProcessing.Closing(photoOrginal);
-                //}
 
-                //photoOrginal = photo;
+                Base.photoOrginal.Clone(Base.photo);
                 ReloadPhoto();
-                //wyświetlanie obrazu w image_img
             }
         }
 

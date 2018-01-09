@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Image_Surface_Comparison_System"
         mc:Ignorable="d"
         Title="ISCS - Image Surface Comparison System" MinWidth="1024" MinHeight="600" 
-        WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized" Closed="Window_Closed">
     <Grid Background="#464646">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>

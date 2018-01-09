@@ -97,7 +97,7 @@ namespace Image_Surface_Comparison_System
             return (uint)(((alpha << 24) | (color.red << 16) | (color.green << 8) | color.blue) & 0xffffffffL);
         }
 
-        public String ToString()
+        public override String ToString()
         {
             return "#" + red.ToString("X2") + green.ToString("X2") + blue.ToString("X2");
         }

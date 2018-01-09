@@ -3,50 +3,40 @@ using System.Windows;
 
 namespace Image_Surface_Comparison_System
 {
-    class BrushTool
+    public static class BrushTool
     {
-        Photo patient;
-        Photo orginal;
-        int mode;
-        int size;
-        int startX;
-        int startY;
-        int shape;
+        private static int size;
+        private static int startX;
+        private static int startY;
+        private static int shape;
 
-        public BrushTool(Photo patient, Photo orginal, int mode, int startX, int startY, int size, int shape)
+        public static void Brush(int _startX, int _startY, int _size, int _shape)
         {
-            this.patient = patient;
-            this.orginal = orginal;
-            this.mode = mode;
-            this.size = size;
-            this.startX = startX;
-            this.startY = startY;
-            this.shape = shape;
-        }
+            size = _size;
+            startX = _startX;
+            startY = _startY;
+            shape = _shape;
 
-        public Photo Brush()
-        {
-            if (mode == 0)
+            if (Base.selectedMode == 0)
             {
-                patient.pixelData = (uint[])orginal.pixelData.Clone();
-                Array.Clear(patient.selectedPixels, 0, patient.selectedPixels.Length);
-                patient.selectedPixelsCount = 0;
-                mode = 1;
+                Base.photo.pixelData = (uint[])Base.photoOrginal.pixelData.Clone();
+                Array.Clear(Base.photo.selectedPixels, 0, Base.photo.selectedPixels.Length);
+                Base.photo.selectedPixelsCount = 0;
             }
 
             int x, y;
 
             if (startX - (size / 2) < 0)
                 x = 0;
-            else if (startX + (size / 2) >= patient.width)
-                x = (int)patient.width - 1;
+            else if (startX + (size / 2) >= Base.photo.width)
+                x = (int)Base.photo.width - 1;
             else
                 x = startX - (size / 2);
 
             if (startY - (size / 2) < 0)
                 y = 0;
-            else if (startY + (size / 2) >= patient.height)
-                y = (int)patient.height - 1;
+            else if (startY + (size / 2) >= Base.photo.height)
+                y = (int)Base.photo.height - 1;
             else
                 y = startY - (size / 2);
 
@@ -54,13 +44,11 @@ namespace Image_Surface_Comparison_System
                 DrawCircle(startX, startY, size);
             else
                 DrawSquare(startX, startY, size);
-
-
-            patient.photo.WritePixels(new Int32Rect(0, 0, (int)patient.width, (int)patient.height), patient.pixelData, patient.widthInByte, 0);
-            return patient;
+            
+            Base.photo.photo.WritePixels(new Int32Rect(0, 0, (int)Base.photo.width, (int)Base.photo.height), Base.photo.pixelData, Base.photo.widthInByte, 0);
         }
 
-        private void DrawSquare(int startX, int startY, int size)
+        private static void DrawSquare(int startX, int startY, int size)
         {
             int x = startX - size / 2 + 1;
             int y = startY - size / 2 + 1;
@@ -70,7 +58,7 @@ namespace Image_Surface_Comparison_System
                     DrawPixel(x + i, y + j);
         }
 
-        private void DrawCircle(int x0, int y0, int size)
+        private static void DrawCircle(int x0, int y0, int size)
         {
             int radius = (size / 2) - 1;
             int x = radius;
@@ -111,34 +99,34 @@ namespace Image_Surface_Comparison_System
             radius--;
         }
 
-        private void DrawPixel(int x, int y)
+        private static void DrawPixel(int x, int y)
         {
-            if (x >= 0 && x < patient.width && y >= 0 && y < patient.height)
+            if (x >= 0 && x < Base.photo.width && y >= 0 && y < Base.photo.height)
             {
                 int index;
-                index = patient.GetIndex(x, y);
-                if (mode != 2)
+                index = Base.photo.GetIndex(x, y);
+                if (Base.selectedMode != 2)
                 {
-                    if (patient.selectedPixels[x, y] == false)
+                    if (Base.photo.selectedPixels[x, y] == false)
                     {
-                        patient.pixelData[index] = Color.ToUint(Base.selectedColor);
-                        patient.selectedPixels[x, y] = true;
-                        patient.selectedPixelsCount++;
+                        Base.photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                        Base.photo.selectedPixels[x, y] = true;
+                        Base.photo.selectedPixelsCount++;
                     }
                 }
                 else
                 {
-                    if (patient.selectedPixels[x, y] == true)
+                    if (Base.photo.selectedPixels[x, y] == true)
                     {
-                        patient.pixelData[index] = orginal.pixelData[index];
-                        patient.selectedPixels[x, y] = false;
-                        patient.selectedPixelsCount--;
+                        Base.photo.pixelData[index] = Base.photoOrginal.pixelData[index];
+                        Base.photo.selectedPixels[x, y] = false;
+                        Base.photo.selectedPixelsCount--;
                     }
                 }
             }
         }
 
-        private void DrawLine(int x1, int x2, int y)
+        private static void DrawLine(int x1, int x2, int y)
         {
             if (x1 < x2)
                 for (; x1 < x2; x1++)

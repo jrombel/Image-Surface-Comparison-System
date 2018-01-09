@@ -4,60 +4,51 @@ using System.Windows;
 
 namespace Image_Surface_Comparison_System
 {
-    class PolygonTool
+    public static class PolygonTool
     {
-        Photo patient;
-        Photo orginal;
-        int mode;
-        List<Point> points;
+        private static List<Point> points;
+        private static double actualWidth;
+        private static double actualHeight;
+        private static bool[,] visitedPixels;
 
-        double actualWidth;
-        double actualHeight;
-
-        bool[,] visitedPixels;
-
-        public PolygonTool(Photo patient, Photo orginal, int mode, List<Point> points, double actualWidth, double actualHeight)
+        public static void Polygon(List<Point> _points, double _actualWidth, double _actualHeight)
         {
-            this.patient = patient;
-            this.orginal = orginal;
-            this.mode = mode;
+            points = new List<Point>();
 
-            this.points = new List<Point>();
-            foreach (Point tmp in points)
-                this.points.Add(new Point((tmp.X * (double)(patient.width) / actualWidth), (tmp.Y * (double)(patient.height) / actualHeight)));
+            actualWidth = _actualWidth;
+            actualHeight = _actualHeight;
 
-            this.actualWidth = actualWidth;
-            this.actualHeight = actualHeight;
-            visitedPixels = new bool[(int)patient.width, (int)patient.height];
-        }
+            foreach (Point tmp in _points)
+                points.Add(new Point((tmp.X * (double)(Base.photo.width) / actualWidth), (tmp.Y * (double)(Base.photo.height) / actualHeight)));
 
-        public Photo Polygon()
-        {
-            if (mode == 0)
+            
+            visitedPixels = new bool[Base.photo.width, Base.photo.height];
+
+            if (Base.selectedMode == 0)
             {
-                patient.pixelData = (uint[])orginal.pixelData.Clone();
-                patient.selectedPixelsCount = 0;
+                Base.photo.pixelData = (uint[])Base.photoOrginal.pixelData.Clone();
+                Base.photo.selectedPixelsCount = 0;
 
-                Array.Clear(patient.selectedPixels, 0, patient.selectedPixels.Length);
+                Array.Clear(Base.photo.selectedPixels, 0, Base.photo.selectedPixels.Length);
                 Array.Clear(visitedPixels, 0, visitedPixels.Length);
             }
 
             for (int i = 0; i < points.Count; i++)
             {
                 if (i + 1 != points.Count)
-                    line(points[i], points[i + 1]);
+                    Line(points[i], points[i + 1]);
                 else
-                    line(points[i], points[0]);
+                    Line(points[i], points[0]);
             }
 
             bool last = false;
             int amount;
             bool exit = false;
 
-            for (int y = 0; y < patient.height; y++)
+            for (int y = 0; y < Base.photo.height; y++)
             {
                 amount = 0;
-                for (int x = 0; x < patient.width; x++)
+                for (int x = 0; x < Base.photo.width; x++)
                 {
                     if (visitedPixels[x, y] != last)
                         amount++;
@@ -78,11 +69,10 @@ namespace Image_Surface_Comparison_System
                     break;
             }
 
-            patient.photo.WritePixels(new Int32Rect(0, 0, (int)patient.width, (int)patient.height), patient.pixelData, patient.widthInByte, 0);
-            return patient;
+            Base.photo.photo.WritePixels(new Int32Rect(0, 0, (int)Base.photo.width, (int)Base.photo.height), Base.photo.pixelData, Base.photo.widthInByte, 0);
         }
 
-        private void line(Point p1, Point p2)
+        private static void Line(Point p1, Point p2)
         {
             int w = (int)(p2.X - p1.X);
             int h = (int)(p2.Y - p1.Y);
@@ -105,26 +95,26 @@ namespace Image_Surface_Comparison_System
             for (int i = 0; i <= longest; i++)
             {
                 int index;
-                index = patient.GetIndex(x, y);
+                index = Base.photo.GetIndex(x, y);
 
                 visitedPixels[x, y] = true;
 
-                if (mode != 2)
+                if (Base.selectedMode != 2)
                 {
-                    if (patient.selectedPixels[x, y] == false)
+                    if (Base.photo.selectedPixels[x, y] == false)
                     {
-                        patient.pixelData[index] = Color.ToUint(Base.selectedColor);
-                        patient.selectedPixels[x, y] = true;
-                        patient.selectedPixelsCount++;
+                        Base.photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                        Base.photo.selectedPixels[x, y] = true;
+                        Base.photo.selectedPixelsCount++;
                     }
                 }
                 else
                 {
-                    if (patient.selectedPixels[x, y] == true)
+                    if (Base.photo.selectedPixels[x, y] == true)
                     {
-                        patient.pixelData[index] = orginal.pixelData[index];
-                        patient.selectedPixels[x, y] = false;
-                        patient.selectedPixelsCount--;
+                        Base.photo.pixelData[index] = Base.photoOrginal.pixelData[index];
+                        Base.photo.selectedPixels[x, y] = false;
+                        Base.photo.selectedPixelsCount--;
                     }
                 }
                 numerator += shortest;
@@ -142,7 +132,7 @@ namespace Image_Surface_Comparison_System
             }
         }
 
-        private void Fill(int xx, int yy)
+        private static void Fill(int xx, int yy)
         {
             Stack<Tuple<int, int>> stack = new Stack<Tuple<int, int>>();
             stack.Push(new Tuple<int, int>(xx, yy));
@@ -156,35 +146,35 @@ namespace Image_Surface_Comparison_System
 
 
                 int index;
-                index = patient.GetIndex(x, y);
+                index = Base.photo.GetIndex(x, y);
 
                 visitedPixels[x, y] = true;
-                if (mode != 2)
+                if (Base.selectedMode != 2)
                 {
-                    if (patient.selectedPixels[x, y] == false)
+                    if (Base.photo.selectedPixels[x, y] == false)
                     {
-                        patient.pixelData[index] = Color.ToUint(Base.selectedColor);
-                        patient.selectedPixels[x, y] = true;
-                        patient.selectedPixelsCount++;
+                        Base.photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                        Base.photo.selectedPixels[x, y] = true;
+                        Base.photo.selectedPixelsCount++;
                     }
                 }
                 else
                 {
-                    if (patient.selectedPixels[x, y] == true)
+                    if (Base.photo.selectedPixels[x, y] == true)
                     {
-                        patient.pixelData[index] = orginal.pixelData[index];
-                        patient.selectedPixels[x, y] = false;
-                        patient.selectedPixelsCount--;
+                        Base.photo.pixelData[index] = Base.photoOrginal.pixelData[index];
+                        Base.photo.selectedPixels[x, y] = false;
+                        Base.photo.selectedPixelsCount--;
                     }
                 }
 
                 if (x - 1 >= 0 && visitedPixels[x - 1, y] == false)
                     stack.Push(new Tuple<int, int>(x - 1, y));
-                if (x + 1 < patient.width && visitedPixels[x + 1, y] == false)
+                if (x + 1 < Base.photo.width && visitedPixels[x + 1, y] == false)
                     stack.Push(new Tuple<int, int>(x + 1, y));
                 if (y - 1 >= 0 && visitedPixels[x, y - 1] == false)
                     stack.Push(new Tuple<int, int>(x, y - 1));
-                if (y + 1 < patient.height && visitedPixels[x, y + 1] == false)
+                if (y + 1 < Base.photo.height && visitedPixels[x, y + 1] == false)
                     stack.Push(new Tuple<int, int>(x, y + 1));
             }
         }

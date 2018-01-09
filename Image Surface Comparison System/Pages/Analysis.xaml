@@ -19,7 +19,8 @@
             <Label Content="Album: " VerticalAlignment="Center" Foreground="White"/>
             <ComboBox Name="album_cb" Margin="5" VerticalAlignment="Center" DropDownOpened="album_cb_DropDownOpened" SelectionChanged="album_cb_SelectionChanged" Width="200"/>
 
-            <Button Content="Update" Margin="5" Padding="3" Click="UpdateClick" />
+            <Button Content="Update" Margin="4" Padding="3" Click="UpdateClick" />
+            <Button Content="Print" Margin="20,4,4,4" Padding="3" Click="PrintClick" />
             <!--<Label Content="Order: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
             <ComboBox Name="order_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged" Width="60">
                 <ComboBoxItem Name="name_cbi" Content="Name" IsSelected="True"/>
@@ -34,19 +35,25 @@
 
         <Separator Grid.Row="1" Margin="0" />
 
-        <lvc:CartesianChart Name="label_cc" Grid.Row="2" Series="{Binding SeriesCollection}" DataClick="Chart_OnDataClick">
-
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Name="label_a" LabelsRotation="20" Position="LeftBottom" Title="Photo" Foreground="White">
-                    <lvc:Axis.Separator >
-                        <lvc:Separator Step="1" />
-                    </lvc:Axis.Separator>
-                </lvc:Axis>
-            </lvc:CartesianChart.AxisX>
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Percent" Position="LeftBottom" MinValue="0" Foreground="White" />
-            </lvc:CartesianChart.AxisY>
-        </lvc:CartesianChart>
+        <Grid Grid.Row="2" Name="chart_grid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Name="chartName_l" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="20" Content="{Binding ElementName=album_cb, Path=SelectedValue}" Visibility="Collapsed"/>
+            <lvc:CartesianChart Grid.Row="1" Name="chart"  Series="{Binding seriesCollection}">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Name="chartAxisX" LabelsRotation="20" Position="LeftBottom" Title="Photo" Foreground="White">
+                        <lvc:Axis.Separator >
+                            <lvc:Separator Step="1" />
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Name="chartAxisY" Title="Percent" Position="LeftBottom" MinValue="0" Foreground="White" />
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+        </Grid>
 
     </Grid>
 </Page>

@@ -28,6 +28,11 @@ namespace Image_Surface_Comparison_System
 
         }
 
+        public Photo()
+        {
+
+        }
+
         public int GetIndex(int x, int y)
         {
             return y * width + x;

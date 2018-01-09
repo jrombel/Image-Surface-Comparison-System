@@ -4,50 +4,38 @@ using System.Windows;
 
 namespace Image_Surface_Comparison_System
 {
-    public class WandTool
+    public static class WandTool
     {
-        Photo patient;
-        Photo orginal;
-        int mode;
-        bool[,] visitedPixels;
-        int startX;
-        int startY;
-        private int index;
-        bool adjacent;
-        Color comparative;
-        byte degree;
+        private static bool[,] visitedPixels;
+        private static int startX;
+        private static int startY;
+        private static int index;
+        private static Color comparative;
+        private static byte degree;
 
-        public WandTool(Photo patient, Photo orginal, int mode, int startX, int startY, bool adjacent, Color comparative, byte degree)
+        public static void Wand(int _startX, int _startY, Color _comparative, byte _degree)
         {
-            this.patient = patient;
-            this.orginal = orginal;
-            this.mode = mode;
-            visitedPixels = new bool[(int)patient.width, (int)patient.height];
-            this.startX = startX;
-            this.startY = startY;
+            visitedPixels = new bool[(int)Base.photo.width, (int)Base.photo.height];
+            startX = _startX;
+            startY = _startY;
             visitedPixels[startX, startY] = true;
-            this.adjacent = adjacent;
-            this.comparative = comparative;
-            this.degree = degree;
-        }
+            comparative = _comparative;
+            degree = _degree;
 
-        public Photo Wand()
-        {
-            if (mode == 0)
+            if (Base.selectedMode == 0)
             {
-                patient.pixelData = (uint[])orginal.pixelData.Clone();
-                patient.selectedPixelsCount = 0;
+                Base.photo.pixelData = (uint[])Base.photoOrginal.pixelData.Clone();
+                Base.photo.selectedPixelsCount = 0;
 
-                Array.Clear(patient.selectedPixels, 0, patient.selectedPixels.Length);
+                Array.Clear(Base.photo.selectedPixels, 0, Base.photo.selectedPixels.Length);
                 Array.Clear(visitedPixels, 0, visitedPixels.Length);
             }
             Selected((ushort)startX, (ushort)startY);
 
-            patient.photo.WritePixels(new Int32Rect(0, 0, (int)patient.width, (int)patient.height), patient.pixelData, patient.widthInByte, 0);
-            return patient;
+            Base.photo.photo.WritePixels(new Int32Rect(0, 0, (int)Base.photo.width, (int)Base.photo.height), Base.photo.pixelData, Base.photo.widthInByte, 0);
         }
 
-        private void Selected(ushort x, ushort y)
+        private static void Selected(ushort x, ushort y)
         {
             Stack<Tuple<int, int>> stack = new Stack<Tuple<int, int>>();
             stack.Push(new Tuple<int, int>(x, y));
@@ -59,62 +47,56 @@ namespace Image_Surface_Comparison_System
                 int x2 = current.Item1;
                 int y2 = current.Item2;
 
-                index = orginal.GetIndex(x2, y2);
-                if (mode != 2)
+                index = Base.photoOrginal.GetIndex(x2, y2);
+                if (Base.selectedMode != 2)
                 {
-                    if (patient.selectedPixels[x2, y2] == false)
+                    if (Base.photo.selectedPixels[x2, y2] == false)
                     {
-                        patient.pixelData[index] = Color.ToUint(Base.selectedColor);
-                        patient.selectedPixelsCount++;
-                        patient.selectedPixels[x2, y2] = true;
+                        Base.photo.pixelData[index] = Color.ToUint(Base.selectedColor);
+                        Base.photo.selectedPixelsCount++;
+                        Base.photo.selectedPixels[x2, y2] = true;
                     }
                 }
                 else
                 {
-                    if (patient.selectedPixels[x2, y2] == true)
+                    if (Base.photo.selectedPixels[x2, y2] == true)
                     {
-                        patient.pixelData[index] = orginal.pixelData[index];
-                        patient.selectedPixelsCount--;
-                        patient.selectedPixels[x2, y2] = false;
+                        Base.photo.pixelData[index] = Base.photoOrginal.pixelData[index];
+                        Base.photo.selectedPixelsCount--;
+                        Base.photo.selectedPixels[x2, y2] = false;
                     }
                 }
 
                 visitedPixels[x2, y2] = true;
 
-                if (adjacent)
-                {
-                    comparative = orginal.GetColor(index);
-                    index = orginal.GetIndex(x2, y2);
-                }
-
                 if (x2 - 1 >= 0 && visitedPixels[x2 - 1, y2] == false)
                 {
-                    index = orginal.GetIndex(x2 - 1, y2);
-                    Color tmp = orginal.GetColor(index);
+                    index = Base.photoOrginal.GetIndex(x2 - 1, y2);
+                    Color tmp = Base.photoOrginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2 - 1, y2));
                 }
 
                 if (y2 - 1 >= 0 && visitedPixels[x2, y2 - 1] == false)
                 {
-                    index = orginal.GetIndex(x2, y2 - 1);
-                    Color tmp = orginal.GetColor(index);
+                    index = Base.photoOrginal.GetIndex(x2, y2 - 1);
+                    Color tmp = Base.photoOrginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2, y2 - 1));
                 }
 
-                if (x2 + 1 < orginal.width && visitedPixels[x2 + 1, y2] == false)
+                if (x2 + 1 < Base.photoOrginal.width && visitedPixels[x2 + 1, y2] == false)
                 {
-                    index = orginal.GetIndex(x2 + 1, y2);
-                    Color tmp = orginal.GetColor(index);
+                    index = Base.photoOrginal.GetIndex(x2 + 1, y2);
+                    Color tmp = Base.photoOrginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2 + 1, y2));
                 }
 
-                if (y2 + 1 < orginal.height && visitedPixels[x2, y2 + 1] == false)
+                if (y2 + 1 < Base.photoOrginal.height && visitedPixels[x2, y2 + 1] == false)
                 {
-                    index = orginal.GetIndex(x2, y2 + 1);
-                    Color tmp = orginal.GetColor(index);
+                    index = Base.photoOrginal.GetIndex(x2, y2 + 1);
+                    Color tmp = Base.photoOrginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2, y2 + 1));
                 }

@@ -98,19 +98,13 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1" Margin="1">
             <StackPanel>
 
-                <!--<Expander Header="Load photo">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Name="firstLoadPhotoButton_b" Margin="3" Padding="2" Click="Photo_Click" Content="First"/>
-                        <Button Name="secondLoadPhotoButton_b" Margin="3" Padding="2" Click="Photo_Click" Content="Second"/>
-                    </StackPanel>
-                </Expander>-->
-
                 <GroupBox Header="Survival rate">
                     <Label Name="degree_l" Content="Mark areas."/>
                 </GroupBox>
 
                 <GroupBox Header="Tools">
                     <StackPanel Orientation="Vertical">
+
                         <Label Content="Selection Tool" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <RadioButton Name="selectionWandTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Wand" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}" IsChecked="True">
@@ -123,6 +117,7 @@
                                 <Image Source="/Image Surface Comparison System;component/Resources/selectionFreeTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
                         </StackPanel>
+
                         <Label Content="Selection Mode" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <RadioButton Name="selectionNewMode_rb" Click="selectionModeChange_rb_Click" Margin="5,0,5,0" ToolTip="New selection" GroupName="selectionModeGroup" Style="{StaticResource {x:Type ToggleButton}}" IsChecked="True">
@@ -135,6 +130,7 @@
                                 <Image Source="/Image Surface Comparison System;component/Resources/selectionSubtractMode_img.png" Width="35" Height="35"/>
                             </RadioButton>
                         </StackPanel>
+
                         <Label Content="Other Tools" HorizontalAlignment="Center"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <RadioButton Name="handTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Hand" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
@@ -158,7 +154,7 @@
                             <GroupBox Header="Tolerance" Background="#6e6e6e">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="0.3*"/>
+                                        <ColumnDefinition Width="40"/>
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
@@ -167,7 +163,7 @@
                                     </Grid.RowDefinitions>
                                     <TextBox Grid.Column="0" Margin="5" Name="photoDegreeTolerance_tb" Text="{Binding ElementName=photoDegreeTolerance_s, Path=Value}" TextAlignment="Center"/>
                                     <Slider Grid.Column="1" Margin="5" Name="photoDegreeTolerance_s" Value="{Binding ElementName=photoDegreeTolerance_tb, Path=Text}" Minimum="0" Maximum="255" TickFrequency="1" IsSnapToTickEnabled="True"/>
-                                    <CheckBox Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Name="photoDegreeToleranceAdjacent_cb">Adjacent</CheckBox>
+
                                 </Grid>
                             </GroupBox>
                         </StackPanel>
@@ -177,24 +173,25 @@
                                 <StackPanel>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="0.3*"/>
+                                            <ColumnDefinition Width="40"/>
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBox Grid.Column="0" Margin="5" Name="brushSize_tb" Text="{Binding ElementName=brushSize_s, Path=Value}" TextAlignment="Center"/>
                                         <Slider Grid.Column="1" Margin="5" Name="brushSize_s" Value="{Binding ElementName=brushSize_tb, Path=Text}" Minimum="1" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True"/>
                                     </Grid>
+                                </StackPanel>
+                            </GroupBox>
 
-                                    <Label Content="Shape"/>
-                                    <RadioButton Content="Circle" Name="circleShape_rb" GroupName="brushShape_gn" Click="brushShape_rb_Click" IsChecked="True" Foreground="White" />
-                                    <RadioButton Content="Square" Name="squareShape_rb" GroupName="brushShape_gn" Click="brushShape_rb_Click" Foreground="White" />
-
+                            <GroupBox Header="Shape" Background="#6e6e6e">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Content="Circle" Name="circleShape_rb" GroupName="brushShape_gn" Margin="3" Click="brushShape_rb_Click" IsChecked="True" Foreground="White" />
+                                    <RadioButton Content="Square" Name="squareShape_rb" GroupName="brushShape_gn" Margin="3" Click="brushShape_rb_Click" Foreground="White" />
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
 
                         <StackPanel Visibility="{Binding ElementName=selectionPolygonTool_rb, Path=IsChecked, Converter={StaticResource b_To_v}}">
                             <Button Name="selectPolygon_b" Content="Select" Click="selectPolygon_b_Click" IsEnabled="False" Margin="3" Padding="3"/>
-                            <!--<Button Name="correctPolygon_b" Content="Correct" Click="correctPolygon_b_Click" IsEnabled="False" Margin="3" Padding="3"/>-->
                             <Button Name="clearPolygon_b" Content="Clear" Click="clearPolygon_b_Click" Margin="3" Padding="3"/>
                         </StackPanel>
 
@@ -204,28 +201,31 @@
                             <Label Content="Mode: "/>
                             <RadioButton Name="magnifierZoomInMode" Content="Zoom in" GroupName="magnifierMode" IsChecked="True" Foreground="White"/>
                             <RadioButton Name="magnifierZoomOut" Content="Zoom out" GroupName="magnifierMode" Foreground="White"/>
-
                         </StackPanel>
 
                     </StackPanel>
                 </GroupBox>
 
-                <Expander Header="Settings">
+                <Expander Header="Selection settings">
                     <StackPanel>
                         <GroupBox Header="Opacity" Background="#6e6e6e">
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="0.3*"/>
+                                        <ColumnDefinition Width="40"/>
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <TextBox Grid.Column="0" Margin="5" Name="opacity_tb" Text="{Binding ElementName=opacity_s, Path=Value}" TextAlignment="Center"/>
                                     <Slider Grid.Column="1" Margin="5" Name="opacity_s" Value="{Binding ElementName=opacity_tb, Path=Text}" Minimum="0" Maximum="1" TickFrequency="0.01" IsSnapToTickEnabled="True"/>
                                 </Grid>
-                                <Label Content="Selection color"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Color" Background="#6e6e6e">
+                            <StackPanel>
                                 <xctk:ColorPicker Margin="5" Name="selectedColorPicker_cp" SelectedColorChanged="selectedColorPicker_cp_SelectedColorChanged"/>
                             </StackPanel>
                         </GroupBox>
+                        <Button Content="Clear selection" Click="ClearSelection_Click" Margin="5" Padding="3"/>
                     </StackPanel>
                 </Expander>
 
@@ -234,7 +234,6 @@
                         <ComboBox Name="photoProcessing_cb" Margin="5">
                             <ComboBoxItem Name="filteringPhotoProcessing_cbi" Content="Filtering" IsSelected="True"/>
                             <ComboBoxItem Name="binaryzationPhotoProcessing_cbi" Content="Binaryzation"/>
-                            <!--<ComboBoxItem Name="morphologyPhotoProcessing_cbi" Content="Morphology"/>-->
                         </ComboBox>
 
                         <GroupBox Header="Filtering options" Background="#6e6e6e" Margin="5,-12,5,5" Visibility="{Binding ElementName=filteringPhotoProcessing_cbi, Path=IsSelected, Converter={StaticResource b_To_v}}">
@@ -257,25 +256,10 @@
                             </StackPanel>
                         </GroupBox>
 
-                        <!--<GroupBox Header="Morphology options" Background="#6e6e6e" Margin="5,-12,5,5" Visibility="{Binding ElementName=morphologyPhotoProcessing_cbi, Path=IsSelected, Converter={StaticResource b_To_v}}">
-                            <ComboBox Name="morphologyPhotoProcessing" Margin="5">
-                                <ComboBoxItem Content="Dilation"/>
-                                <ComboBoxItem Content="Erosion"/>
-                                <ComboBoxItem Content="Opening"/>
-                                <ComboBoxItem Content="Closing"/>
-                            </ComboBox>
-                        </GroupBox>-->
-
-                        <Button Content="Apply" Margin="5" Click="photoProcessing_btn"/>
+                        <Button Content="Apply" Click="photoProcessing_btn" Margin="5" Padding="3"/>
                     </StackPanel>
                 </Expander>
 
-                <!--<Expander Header="Helpful information">
-                    <StackPanel>
-                        <Label Content="Color:" Name="Image1Color_l"/>
-                        <Label Content="" Name="Image1Pixels_l"/>
-                    </StackPanel>
-                </Expander>-->
             </StackPanel>
         </ScrollViewer>
     </Grid>
