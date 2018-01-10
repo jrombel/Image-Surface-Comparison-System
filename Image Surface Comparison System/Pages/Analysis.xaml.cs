@@ -103,14 +103,14 @@ namespace Image_Surface_Comparison_System.Pages
                 {
                     using (StreamReader sr = new StreamReader(path + "\\" + photo))
                     {
-                        sr.ReadLine();
+                        string label = sr.ReadLine();
                         sr.ReadLine();
                         //if (percentages_cbi.IsSelected == true)
                         ValuesTmp.Add(new ObservableValue(((Double.Parse(sr.ReadLine())) / (Double.Parse(sr.ReadLine()))) * 100));
                         //else if (pixels_cbi.IsSelected == true)
                         //    ValuesTmp.Add(new ObservableValue(Int32.Parse(sr.ReadLine())));
 
-                        LabelsTmp.Add(photo);
+                        LabelsTmp.Add(label);
                     }
                 }
                 chartAxisX.Labels = LabelsTmp.ToArray();

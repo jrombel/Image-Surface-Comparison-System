@@ -7,39 +7,43 @@
       mc:Ignorable="d" 
       Title="AboutSystem">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition />
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+    <Border BorderThickness="1,0,1,1" BorderBrush="#a0a0a0">
+        <Grid Background="#5a5a5a">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="40" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
+            <TextBlock Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="40" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
             Image Surface Comparison System
-        </TextBlock>
+            </TextBlock>
 
-        <TextBlock Grid.Row="1" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="25" Margin="5,10,5,5" Foreground="White" TextWrapping="WrapWithOverflow">
+            <TextBlock Grid.Row="1" VerticalAlignment="Top" FontFamily="Segoe UI" FontSize="25" Margin="5,10,5,5" Foreground="White" TextWrapping="WrapWithOverflow">
             System that compares the size of the selected surface on individual photos.
-        </TextBlock>
+            </TextBlock>
 
-        <TextBlock Grid.Row="2" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="23" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
+            <TextBlock Grid.Row="2" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="23" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
             Pages:<LineBreak/>
             - Calculate - marking interesting surfaces on the photos<LineBreak/>
             - Analysis - comparing the size of selected areas on the graph<LineBreak/>
             - About system - this page<LineBreak/><LineBreak/>
-            There is a "Photos" folder in the executable program location. The photos to be compared should be in the directories in this folder.<LineBreak/><LineBreak/>
-            Photographs in one study should be made of the same height (you can use a tripod) and it is best to be made with the same camera (a guarantee of obtaining similar photos and the same resolution of the photo).
-        </TextBlock>
+            There is a "Photos" folder in the executable program location. The photos to be compared should be in the directories 
+            in this folder.<LineBreak/><LineBreak/>
+            Photographs in one study should be made of the same distance (you can use a tripod) and it is best to be made with the 
+            same camera (a guarantee of obtaining similar photos and the same resolution of the photo).
+            </TextBlock>
 
-        <TextBlock Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="25" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
+            <TextBlock Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="25" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
             Created in 2018 by Jakub Rombel
-        </TextBlock>
+            </TextBlock>
 
-        <TextBlock Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="16.5" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
+            <TextBlock Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="16.5" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">
             The system was created as a result of the graduation thesis at the Faculty of Computer Science of the Bialystok University of Technology
-        </TextBlock>
+            </TextBlock>
 
-    </Grid>
+        </Grid>
+    </Border>
 </Page>

@@ -29,7 +29,7 @@ namespace Image_Surface_Comparison_System
         double renderCenterX;
         double renderCenterY;
         bool displacement = false;
-        
+
         public Calculation()
         {
             InitializeComponent();
@@ -68,7 +68,141 @@ namespace Image_Surface_Comparison_System
             if (Base.selectedTool == 0)
             {
                 selected = new Color(Base.photoOrginal.GetColor(index));
-                WandTool.Wand((int)x, (int)y, selected, (byte)photoDegreeTolerance_s.Value);
+                if (autoOtherPhotos_ch.IsChecked == false)
+                {
+                    WandTool.Wand((int)x, (int)y, selected, (byte)photoDegreeTolerance_s.Value);
+                }
+                else
+                {
+                    for (int i = 0; i < photo_cb.Items.Count; i++)
+                    {
+                        photo_cb.SelectedIndex = i;
+                        string filename = Base.path + "\\Photos\\" + album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
+                        Base.lastFilename = album_cb.SelectedValue + "\\" + photo_cb.SelectedValue;
+
+                        BitmapImage b = new BitmapImage();
+                        b.BeginInit();
+                        b.UriSource = new Uri(filename);
+                        b.EndInit();
+
+                        Base.photo = new Photo((BitmapSource)b);
+                        Base.photoOrginal = new Photo((BitmapSource)b);
+
+                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex((int)x, (int)y))) < (byte)photoDegreeTolerance_s.Value)
+                        {
+                            WandTool.Wand((int)x, (int)y, selected, (byte)photoDegreeTolerance_s.Value);
+                        }
+                        else
+                        {
+                            int width = (int)(Base.photoOrginal.width * 0.1);
+                            int height = (int)(Base.photoOrginal.height * 0.1);
+                            int limit;
+                            if (width > height)
+                                limit = width;
+                            else
+                                limit = height;
+
+                            int xx = (int)x, yy = (int)y;
+                            for (int step = 1; step < limit; step++)
+                            {
+                                int startX, startY, endX, endY;
+                                bool end = false;
+                                int count;
+                                if (x - step >= 0)
+                                    startX = (int)x - step;
+                                else
+                                    startX = 0;
+
+                                if (y - step >= 0)
+                                    startY = (int)y - step;
+                                else
+                                    startY = 0;
+
+                                if (x + step < Base.photo.width)
+                                    endX = (int)x + step;
+                                else
+                                    endX = Base.photo.width - 1;
+
+                                if (y + step < Base.photo.height)
+                                    endY = (int)y + step;
+                                else
+                                    endY = Base.photo.height - 1;
+
+                                count = 0;
+                                for (int xxx = startX; xxx < endX; xxx++)
+                                {
+                                    if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(xxx, startY))) < (byte)photoDegreeTolerance_s.Value)
+                                    {
+                                        count++;
+                                        if (count > 5)
+                                        {
+                                            xx = xxx;
+                                            yy = startY;
+                                            end = true;
+                                        }
+                                    }
+                                }
+                                count = 0;
+                                if (end == false)
+                                {
+                                    for (int xxx = startX; xxx < endX; xxx++)
+                                    {
+                                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(xxx, endY))) < (byte)photoDegreeTolerance_s.Value)
+                                        {
+                                            count++;
+                                            if (count > 5)
+                                            {
+                                                xx = xxx;
+                                                yy = endY;
+                                                end = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                count = 0;
+                                if (end == false)
+                                {
+                                    for (int yyy = startY + 1; yyy < endY - 1; yyy++)
+                                    {
+                                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(startX, yyy))) < (byte)photoDegreeTolerance_s.Value)
+                                        {
+                                            count++;
+                                            if (count > 5)
+                                            {
+                                                xx = startX;
+                                                yy = yyy;
+                                                end = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                count = 0;
+                                if (end == false)
+                                {
+                                    for (int yyy = startY + 1; yyy < endY - 1; yyy++)
+                                    {
+                                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(endX, yyy))) < (byte)photoDegreeTolerance_s.Value)
+                                        {
+                                            count++;
+                                            if (count > 5)
+                                            {
+                                                xx = endX;
+                                                yy = yyy;
+                                                end = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (end == true)
+                                    break;
+                            }
+                            WandTool.Wand((int)xx, (int)yy, selected, (byte)photoDegreeTolerance_s.Value);
+                        }
+
+                        image_img.Source = Base.photo.photo;
+                        imageOrginal_img.Source = Base.photoOrginal.photo;
+                    }
+                }
 
                 if (Base.selectedMode == 0)
                 {
@@ -190,7 +324,7 @@ namespace Image_Surface_Comparison_System
                 degree_l.Content = string.Format("{0:0.00}", (((double)(Base.photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + Base.photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
             }
         }
-        
+
         private void image_img_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (Base.selectedTool == 3)
@@ -386,7 +520,6 @@ namespace Image_Surface_Comparison_System
                 Base.photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
                 Base.photo = new Photo((BitmapSource)image_img.Source);
                 photoCounter = (photo_cb.SelectedIndex + 1) + " / " + photo_cb.Items.Count;
-
             }
             else
             {
@@ -426,12 +559,15 @@ namespace Image_Surface_Comparison_System
                             }
                         }
                     }
-                    image_img.Source = Base.photo.photo;
-
                 }
             }
+            image_img.Source = Base.photo.photo;
+
             Base.photo.photo.WritePixels(new Int32Rect(0, 0, (int)Base.photo.width, (int)Base.photo.height), Base.photo.pixelData, Base.photo.widthInByte, 0);
             photo_tb.Text = photoCounter;
+
+            double allPixels = Base.photo.width * Base.photo.height;
+            degree_l.Content = string.Format("{0:0.00}", (((double)(Base.photo.selectedPixelsCount) / allPixels)) * 100) + "% \nSelected: " + Base.photo.selectedPixelsCount + "pixels\nAll: " + allPixels + "pixels";
         }
 
         private void PreviousPhoto_Click(object sender, RoutedEventArgs e)
@@ -524,10 +660,15 @@ namespace Image_Surface_Comparison_System
                 b.UriSource = new Uri(filename);
                 b.EndInit();
 
+                int selectedPixelsCountTmp = Base.photo.selectedPixelsCount;
+                bool[,] selectedPixelsTmp = (bool[,])Base.photo.selectedPixels.Clone();
                 image_img.Source = b;
                 imageOrginal_img.Source = b;
                 Base.photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
                 Base.photo = new Photo((BitmapSource)image_img.Source);
+                Base.photo.selectedPixels = (bool[,])selectedPixelsTmp.Clone();
+                Base.photo.selectedPixelsCount = selectedPixelsCountTmp;
+                ReloadPhoto();
             }
         }
 
@@ -588,13 +729,14 @@ namespace Image_Surface_Comparison_System
                         PhotoProcessing.HighPassSharpening();
                     else if (filteringPhotoProcessing.SelectedIndex == 4)
                         PhotoProcessing.GaussianBlur();
+
+                    Base.photoOrginal.Clone(Base.photo);
                 }
                 else if (photoProcessing_cb.SelectedIndex == 1) //Binaryzation
                 {
                     PhotoProcessing.Binaryzation((int)manuallyValue_s.Value);
                 }
 
-                Base.photoOrginal.Clone(Base.photo);
                 ReloadPhoto();
             }
         }

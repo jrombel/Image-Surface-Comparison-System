@@ -139,7 +139,7 @@
                             <RadioButton Name="magnifierTool_rb" Click="selectionToolChange_rb_Click" Margin="5,0,5,0" ToolTip="Magnifier" GroupName="selectionToolGroup" Style="{StaticResource {x:Type ToggleButton}}">
                                 <Image Source="/Image Surface Comparison System;component/Resources/magnifierTool_img.png" Width="35" Height="35"/>
                             </RadioButton>
-                            <Button Name="undoTool_rb" Click="UndoTool_Click"  Margin="5,0,5,0" ToolTip="Undo" >
+                            <Button Name="undoTool_rb" Click="UndoTool_Click"  Margin="5,0,5,0" ToolTip="Restore" >
                                 <Image Source="/Image Surface Comparison System;component/Resources/undoTool_img.png" Width="35" Height="35"/>
                             </Button>
                         </StackPanel>
@@ -163,9 +163,9 @@
                                     </Grid.RowDefinitions>
                                     <TextBox Grid.Column="0" Margin="5" Name="photoDegreeTolerance_tb" Text="{Binding ElementName=photoDegreeTolerance_s, Path=Value}" TextAlignment="Center"/>
                                     <Slider Grid.Column="1" Margin="5" Name="photoDegreeTolerance_s" Value="{Binding ElementName=photoDegreeTolerance_tb, Path=Text}" Minimum="0" Maximum="255" TickFrequency="1" IsSnapToTickEnabled="True"/>
-
                                 </Grid>
                             </GroupBox>
+                            <CheckBox Content="Auto other photos" Name="autoOtherPhotos_ch" Margin="5" HorizontalAlignment="Center" Foreground="White"/>
                         </StackPanel>
 
                         <StackPanel Visibility="{Binding ElementName=selectionBrushTool_rb, Path=IsChecked, Converter={StaticResource b_To_v}}">

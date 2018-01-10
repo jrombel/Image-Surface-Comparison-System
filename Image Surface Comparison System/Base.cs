@@ -38,7 +38,7 @@ namespace Image_Surface_Comparison_System
                 }
                 using (StreamWriter sw = new StreamWriter(fullPath))
                 {
-                    sw.WriteLine(file);
+                    sw.WriteLine(words[1]);
                     sw.WriteLine(length);
                     sw.WriteLine(photo.selectedPixelsCount);
                     sw.WriteLine(photo.pixelData.Length);
