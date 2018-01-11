@@ -539,6 +539,7 @@ namespace Image_Surface_Comparison_System
                     string line;
                     line = sr.ReadLine();
                     line = sr.ReadLine();
+                    line = sr.ReadLine();
                     Base.photo.selectedPixelsCount = Int32.Parse(sr.ReadLine());
                     line = sr.ReadLine();
 

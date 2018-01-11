@@ -37,7 +37,7 @@ namespace Image_Surface_Comparison_System.Pages
             {
                 lineSeries
             };
-            
+
             DataContext = this;
         }
 
@@ -96,6 +96,7 @@ namespace Image_Surface_Comparison_System.Pages
             LabelsTmp.Clear();
 
             string path = Base.path + "\\Data\\" + album_cb.SelectedValue;
+            DateTime date;
 
             if (Directory.Exists(path))
             {
@@ -105,18 +106,104 @@ namespace Image_Surface_Comparison_System.Pages
                     {
                         string label = sr.ReadLine();
                         sr.ReadLine();
-                        //if (percentages_cbi.IsSelected == true)
-                        ValuesTmp.Add(new ObservableValue(((Double.Parse(sr.ReadLine())) / (Double.Parse(sr.ReadLine()))) * 100));
-                        //else if (pixels_cbi.IsSelected == true)
-                        //    ValuesTmp.Add(new ObservableValue(Int32.Parse(sr.ReadLine())));
 
-                        LabelsTmp.Add(label);
+                        if (date_cbi.IsSelected == false)
+                        {
+                            sr.ReadLine();
+                            LabelsTmp.Add(label);
+                            if (percentages_cbi.IsSelected == true)
+                            {
+                                ValuesTmp.Add(new ObservableValue(((Double.Parse(sr.ReadLine())) / (Double.Parse(sr.ReadLine()))) * 100));
+                                chartAxisY.Title = "Percent";
+                            }
+                            else if (pixels_cbi.IsSelected == true)
+                            {
+                                ValuesTmp.Add(new ObservableValue(Int32.Parse(sr.ReadLine())));
+                                chartAxisY.Title = "Pixels";
+                            }
+                        }
+                        else
+                        {
+                            date = DateTime.Parse(sr.ReadLine());
+                            if(LabelsTmp.Count == 0)
+                            {
+                                LabelsTmp.Add(date.ToShortDateString());
+
+                                if (percentages_cbi.IsSelected == true)
+                                {
+                                    ValuesTmp.Add(new ObservableValue(((Double.Parse(sr.ReadLine())) / (Double.Parse(sr.ReadLine()))) * 100));
+                                    chartAxisY.Title = "Percent";
+                                }
+                                else if (pixels_cbi.IsSelected == true)
+                                {
+                                    ValuesTmp.Add(new ObservableValue(Int32.Parse(sr.ReadLine())));
+                                    chartAxisY.Title = "Pixels";
+                                }
+                                continue;
+                            }
+                            for (int i = 0; i < LabelsTmp.Count; i++)
+                            {
+                                if (date <= DateTime.Parse(LabelsTmp[i]))
+                                {
+                                    LabelsTmp.Insert(i, date.ToShortDateString());
+
+                                    if (percentages_cbi.IsSelected == true)
+                                    {
+                                        ValuesTmp.Insert(i, (new ObservableValue(((Double.Parse(sr.ReadLine())) / (Double.Parse(sr.ReadLine()))) * 100)));
+                                        chartAxisY.Title = "Percent";
+                                    }
+                                    else if (pixels_cbi.IsSelected == true)
+                                    {
+                                        ValuesTmp.Insert(i, new ObservableValue(Int32.Parse(sr.ReadLine())));
+                                        chartAxisY.Title = "Pixels";
+                                    }
+                                    break;
+                                }
+                                else
+                                {
+                                    LabelsTmp.Add(date.ToShortDateString());
+
+                                    if (percentages_cbi.IsSelected == true)
+                                    {
+                                        ValuesTmp.Add(new ObservableValue(((Double.Parse(sr.ReadLine())) / (Double.Parse(sr.ReadLine()))) * 100));
+                                        chartAxisY.Title = "Percent";
+                                    }
+                                    else if (pixels_cbi.IsSelected == true)
+                                    {
+                                        ValuesTmp.Add(new ObservableValue(Int32.Parse(sr.ReadLine())));
+                                        chartAxisY.Title = "Pixels";
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 chartAxisX.Labels = LabelsTmp.ToArray();
             }
             else
                 MessageBox.Show("No areas selected!");
+        }
+
+
+
+        private void type_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (album_cb.SelectedItem != null)
+            {
+                if (percentages_cbi.IsSelected == true)
+                    lineSeries.LabelPoint = point => Math.Round(point.Y, 2) + "%";
+                else
+                    lineSeries.LabelPoint = point => point.Y.ToString();
+
+                DrawGraph();
+            }
+        }
+
+        private void order_cb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (album_cb.SelectedItem != null)
+                DrawGraph();
         }
     }
 }

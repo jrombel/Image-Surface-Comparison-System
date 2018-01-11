@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Drawing.Imaging;
+using System.Text;
 
 namespace Image_Surface_Comparison_System
 {
@@ -40,6 +44,13 @@ namespace Image_Surface_Comparison_System
                 {
                     sw.WriteLine(words[1]);
                     sw.WriteLine(length);
+
+                    string dateTmp = GetDateTakenFromImage(Base.path + "\\Photos\\" + lastFilename);
+                    if (dateTmp != null)
+                        sw.WriteLine(dateTmp);
+                    else
+                        sw.WriteLine(File.GetCreationTime(fullPath));
+
                     sw.WriteLine(photo.selectedPixelsCount);
                     sw.WriteLine(photo.pixelData.Length);
 
@@ -55,6 +66,27 @@ namespace Image_Surface_Comparison_System
                         sw.WriteLine();
                     }
                 }
+            }
+        }
+
+        public static string GetDateTakenFromImage(string path)
+        {
+
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (Image myImage = Image.FromStream(fs, false, false))
+            {
+                try
+                {
+                    Regex r = new Regex(":");
+                    PropertyItem propItem = myImage.GetPropertyItem(36867);
+                    string dateTaken = r.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
+                    return DateTime.Parse(dateTaken).ToShortDateString();
+                }
+                catch (ArgumentException)
+                {
+                    return null;
+                }
+                
             }
         }
     }
