@@ -15,7 +15,7 @@ namespace Image_Surface_Comparison_System
         static public String path;
 
         static public Photo photo;
-        static public Photo photoOrginal;
+        static public Photo photoOriginal;
         static public int selectedTool;
         static public int selectedMode;
 

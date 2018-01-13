@@ -26,7 +26,7 @@ namespace Image_Surface_Comparison_System
 
             if (Base.selectedMode == 0)
             {
-                Base.photo.pixelData = (uint[])Base.photoOrginal.pixelData.Clone();
+                Base.photo.pixelData = (uint[])Base.photoOriginal.pixelData.Clone();
                 Base.photo.selectedPixelsCount = 0;
 
                 Array.Clear(Base.photo.selectedPixels, 0, Base.photo.selectedPixels.Length);
@@ -112,7 +112,7 @@ namespace Image_Surface_Comparison_System
                 {
                     if (Base.photo.selectedPixels[x, y] == true)
                     {
-                        Base.photo.pixelData[index] = Base.photoOrginal.pixelData[index];
+                        Base.photo.pixelData[index] = Base.photoOriginal.pixelData[index];
                         Base.photo.selectedPixels[x, y] = false;
                         Base.photo.selectedPixelsCount--;
                     }
@@ -162,7 +162,7 @@ namespace Image_Surface_Comparison_System
                 {
                     if (Base.photo.selectedPixels[x, y] == true)
                     {
-                        Base.photo.pixelData[index] = Base.photoOrginal.pixelData[index];
+                        Base.photo.pixelData[index] = Base.photoOriginal.pixelData[index];
                         Base.photo.selectedPixels[x, y] = false;
                         Base.photo.selectedPixelsCount--;
                     }

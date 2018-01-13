@@ -24,7 +24,7 @@ namespace Image_Surface_Comparison_System
 
             if (Base.selectedMode == 0)
             {
-                Base.photo.pixelData = (uint[])Base.photoOrginal.pixelData.Clone();
+                Base.photo.pixelData = (uint[])Base.photoOriginal.pixelData.Clone();
                 Base.photo.selectedPixelsCount = 0;
 
                 Array.Clear(Base.photo.selectedPixels, 0, Base.photo.selectedPixels.Length);
@@ -47,7 +47,7 @@ namespace Image_Surface_Comparison_System
                 int x2 = current.Item1;
                 int y2 = current.Item2;
 
-                index = Base.photoOrginal.GetIndex(x2, y2);
+                index = Base.photoOriginal.GetIndex(x2, y2);
                 if (Base.selectedMode != 2)
                 {
                     if (Base.photo.selectedPixels[x2, y2] == false)
@@ -61,7 +61,7 @@ namespace Image_Surface_Comparison_System
                 {
                     if (Base.photo.selectedPixels[x2, y2] == true)
                     {
-                        Base.photo.pixelData[index] = Base.photoOrginal.pixelData[index];
+                        Base.photo.pixelData[index] = Base.photoOriginal.pixelData[index];
                         Base.photo.selectedPixelsCount--;
                         Base.photo.selectedPixels[x2, y2] = false;
                     }
@@ -71,32 +71,32 @@ namespace Image_Surface_Comparison_System
 
                 if (x2 - 1 >= 0 && visitedPixels[x2 - 1, y2] == false)
                 {
-                    index = Base.photoOrginal.GetIndex(x2 - 1, y2);
-                    Color tmp = Base.photoOrginal.GetColor(index);
+                    index = Base.photoOriginal.GetIndex(x2 - 1, y2);
+                    Color tmp = Base.photoOriginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2 - 1, y2));
                 }
 
                 if (y2 - 1 >= 0 && visitedPixels[x2, y2 - 1] == false)
                 {
-                    index = Base.photoOrginal.GetIndex(x2, y2 - 1);
-                    Color tmp = Base.photoOrginal.GetColor(index);
+                    index = Base.photoOriginal.GetIndex(x2, y2 - 1);
+                    Color tmp = Base.photoOriginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2, y2 - 1));
                 }
 
-                if (x2 + 1 < Base.photoOrginal.width && visitedPixels[x2 + 1, y2] == false)
+                if (x2 + 1 < Base.photoOriginal.width && visitedPixels[x2 + 1, y2] == false)
                 {
-                    index = Base.photoOrginal.GetIndex(x2 + 1, y2);
-                    Color tmp = Base.photoOrginal.GetColor(index);
+                    index = Base.photoOriginal.GetIndex(x2 + 1, y2);
+                    Color tmp = Base.photoOriginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2 + 1, y2));
                 }
 
-                if (y2 + 1 < Base.photoOrginal.height && visitedPixels[x2, y2 + 1] == false)
+                if (y2 + 1 < Base.photoOriginal.height && visitedPixels[x2, y2 + 1] == false)
                 {
-                    index = Base.photoOrginal.GetIndex(x2, y2 + 1);
-                    Color tmp = Base.photoOrginal.GetColor(index);
+                    index = Base.photoOriginal.GetIndex(x2, y2 + 1);
+                    Color tmp = Base.photoOriginal.GetColor(index);
                     if (Color.Difference(tmp, comparative) < degree)
                         stack.Push(new Tuple<int, int>(x2, y2 + 1));
                 }

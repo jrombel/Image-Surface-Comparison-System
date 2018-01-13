@@ -67,7 +67,7 @@ namespace Image_Surface_Comparison_System
 
             if (Base.selectedTool == 0)
             {
-                selected = new Color(Base.photoOrginal.GetColor(index));
+                selected = new Color(Base.photoOriginal.GetColor(index));
                 if (autoOtherPhotos_ch.IsChecked == false)
                 {
                     WandTool.Wand((int)x, (int)y, selected, (byte)photoDegreeTolerance_s.Value);
@@ -86,16 +86,16 @@ namespace Image_Surface_Comparison_System
                         b.EndInit();
 
                         Base.photo = new Photo((BitmapSource)b);
-                        Base.photoOrginal = new Photo((BitmapSource)b);
+                        Base.photoOriginal = new Photo((BitmapSource)b);
 
-                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex((int)x, (int)y))) < (byte)photoDegreeTolerance_s.Value)
+                        if (Color.Difference(selected, Base.photoOriginal.GetColor(Base.photoOriginal.GetIndex((int)x, (int)y))) < (byte)photoDegreeTolerance_s.Value)
                         {
                             WandTool.Wand((int)x, (int)y, selected, (byte)photoDegreeTolerance_s.Value);
                         }
                         else
                         {
-                            int width = (int)(Base.photoOrginal.width * 0.1);
-                            int height = (int)(Base.photoOrginal.height * 0.1);
+                            int width = (int)(Base.photoOriginal.width * 0.1);
+                            int height = (int)(Base.photoOriginal.height * 0.1);
                             int limit;
                             if (width > height)
                                 limit = width;
@@ -131,7 +131,7 @@ namespace Image_Surface_Comparison_System
                                 count = 0;
                                 for (int xxx = startX; xxx < endX; xxx++)
                                 {
-                                    if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(xxx, startY))) < (byte)photoDegreeTolerance_s.Value)
+                                    if (Color.Difference(selected, Base.photoOriginal.GetColor(Base.photoOriginal.GetIndex(xxx, startY))) < (byte)photoDegreeTolerance_s.Value)
                                     {
                                         count++;
                                         if (count > 5)
@@ -147,7 +147,7 @@ namespace Image_Surface_Comparison_System
                                 {
                                     for (int xxx = startX; xxx < endX; xxx++)
                                     {
-                                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(xxx, endY))) < (byte)photoDegreeTolerance_s.Value)
+                                        if (Color.Difference(selected, Base.photoOriginal.GetColor(Base.photoOriginal.GetIndex(xxx, endY))) < (byte)photoDegreeTolerance_s.Value)
                                         {
                                             count++;
                                             if (count > 5)
@@ -164,7 +164,7 @@ namespace Image_Surface_Comparison_System
                                 {
                                     for (int yyy = startY + 1; yyy < endY - 1; yyy++)
                                     {
-                                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(startX, yyy))) < (byte)photoDegreeTolerance_s.Value)
+                                        if (Color.Difference(selected, Base.photoOriginal.GetColor(Base.photoOriginal.GetIndex(startX, yyy))) < (byte)photoDegreeTolerance_s.Value)
                                         {
                                             count++;
                                             if (count > 5)
@@ -181,7 +181,7 @@ namespace Image_Surface_Comparison_System
                                 {
                                     for (int yyy = startY + 1; yyy < endY - 1; yyy++)
                                     {
-                                        if (Color.Difference(selected, Base.photoOrginal.GetColor(Base.photoOrginal.GetIndex(endX, yyy))) < (byte)photoDegreeTolerance_s.Value)
+                                        if (Color.Difference(selected, Base.photoOriginal.GetColor(Base.photoOriginal.GetIndex(endX, yyy))) < (byte)photoDegreeTolerance_s.Value)
                                         {
                                             count++;
                                             if (count > 5)
@@ -200,7 +200,7 @@ namespace Image_Surface_Comparison_System
                         }
 
                         image_img.Source = Base.photo.photo;
-                        imageOrginal_img.Source = Base.photoOrginal.photo;
+                        imageOrginal_img.Source = Base.photoOriginal.photo;
                     }
                 }
 
@@ -493,7 +493,7 @@ namespace Image_Surface_Comparison_System
             else
             {
                 photo_cb.SelectedItem = null;
-                Base.photoOrginal = null;
+                Base.photoOriginal = null;
                 Base.photo = null;
             }
             photo_cb.ItemsSource = Base.photos;
@@ -517,7 +517,7 @@ namespace Image_Surface_Comparison_System
 
                 image_img.Source = b;
                 imageOrginal_img.Source = b;
-                Base.photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+                Base.photoOriginal = new Photo((BitmapSource)imageOrginal_img.Source);
                 Base.photo = new Photo((BitmapSource)image_img.Source);
                 photoCounter = (photo_cb.SelectedIndex + 1) + " / " + photo_cb.Items.Count;
             }
@@ -665,7 +665,7 @@ namespace Image_Surface_Comparison_System
                 bool[,] selectedPixelsTmp = (bool[,])Base.photo.selectedPixels.Clone();
                 image_img.Source = b;
                 imageOrginal_img.Source = b;
-                Base.photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+                Base.photoOriginal = new Photo((BitmapSource)imageOrginal_img.Source);
                 Base.photo = new Photo((BitmapSource)image_img.Source);
                 Base.photo.selectedPixels = (bool[,])selectedPixelsTmp.Clone();
                 Base.photo.selectedPixelsCount = selectedPixelsCountTmp;
@@ -677,7 +677,7 @@ namespace Image_Surface_Comparison_System
         {
             if (Base.photo != null)
             {
-                Base.photo.pixelData = (uint[])Base.photoOrginal.pixelData.Clone();
+                Base.photo.pixelData = (uint[])Base.photoOriginal.pixelData.Clone();
                 Array.Clear(Base.photo.selectedPixels, 0, Base.photo.selectedPixels.Length);
                 Base.photo.selectedPixelsCount = 0;
 
@@ -731,7 +731,7 @@ namespace Image_Surface_Comparison_System
                     else if (filteringPhotoProcessing.SelectedIndex == 4)
                         PhotoProcessing.GaussianBlur();
 
-                    Base.photoOrginal.Clone(Base.photo);
+                    Base.photoOriginal.Clone(Base.photo);
                 }
                 else if (photoProcessing_cb.SelectedIndex == 1) //Binaryzation
                 {
@@ -804,7 +804,7 @@ namespace Image_Surface_Comparison_System
 
         //        image_img.Source = b;
         //        imageOrginal_img.Source = b;
-        //        photoOrginal = new Photo((BitmapSource)imageOrginal_img.Source);
+        //        photoOriginal = new Photo((BitmapSource)imageOrginal_img.Source);
         //        photo = new Photo((BitmapSource)image_img.Source);
         //    }
         //}

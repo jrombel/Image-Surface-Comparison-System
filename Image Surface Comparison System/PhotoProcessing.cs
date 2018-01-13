@@ -25,49 +25,49 @@ namespace Image_Surface_Comparison_System
                     blue = 0;
 
                     tmp = Base.photo.GetIndex(x - 1, y - 1);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = Base.photo.GetIndex(x, y - 1);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = Base.photo.GetIndex(x + 1, y - 1);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = Base.photo.GetIndex(x - 1, y);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = index;
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = Base.photo.GetIndex(x + 1, y);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = Base.photo.GetIndex(x - 1, y + 1);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = Base.photo.GetIndex(x, y + 1);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     tmp = Base.photo.GetIndex(x + 1, y + 1);
-                    red += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff0000) >> 16);
-                    green += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff00) >> 8);
-                    blue += (byte)((Base.photoOrginal.pixelData[tmp] & 0xff));
+                    red += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff0000) >> 16);
+                    green += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff00) >> 8);
+                    blue += (byte)((Base.photoOriginal.pixelData[tmp] & 0xff));
 
                     Base.photo.pixelData[index] = (uint)((alpha << 24) | ((byte)(red / 9) << 16) | ((byte)(green / 9) << 8) | ((byte)(blue / 9) << 0));
 
@@ -100,54 +100,54 @@ namespace Image_Surface_Comparison_System
                     int[] tmp = new int[9];
                     tmp[0] = Base.photo.GetIndex(x - 1, y - 1);
 
-                    values[0] += (byte)((Base.photoOrginal.pixelData[tmp[0]] & 0xff0000) >> 16);
-                    values[0] += (byte)((Base.photoOrginal.pixelData[tmp[0]] & 0xff00) >> 8);
-                    values[0] += (byte)((Base.photoOrginal.pixelData[tmp[0]] & 0xff));
+                    values[0] += (byte)((Base.photoOriginal.pixelData[tmp[0]] & 0xff0000) >> 16);
+                    values[0] += (byte)((Base.photoOriginal.pixelData[tmp[0]] & 0xff00) >> 8);
+                    values[0] += (byte)((Base.photoOriginal.pixelData[tmp[0]] & 0xff));
 
                     tmp[1] = Base.photo.GetIndex(x, y - 1);
-                    values[1] += (byte)((Base.photoOrginal.pixelData[tmp[1]] & 0xff0000) >> 16);
-                    values[1] += (byte)((Base.photoOrginal.pixelData[tmp[1]] & 0xff00) >> 8);
-                    values[1] += (byte)((Base.photoOrginal.pixelData[tmp[1]] & 0xff));
+                    values[1] += (byte)((Base.photoOriginal.pixelData[tmp[1]] & 0xff0000) >> 16);
+                    values[1] += (byte)((Base.photoOriginal.pixelData[tmp[1]] & 0xff00) >> 8);
+                    values[1] += (byte)((Base.photoOriginal.pixelData[tmp[1]] & 0xff));
 
                     tmp[2] = Base.photo.GetIndex(x + 1, y - 1);
-                    values[2] += (byte)((Base.photoOrginal.pixelData[tmp[2]] & 0xff0000) >> 16);
-                    values[2] += (byte)((Base.photoOrginal.pixelData[tmp[2]] & 0xff00) >> 8);
-                    values[2] += (byte)((Base.photoOrginal.pixelData[tmp[2]] & 0xff));
+                    values[2] += (byte)((Base.photoOriginal.pixelData[tmp[2]] & 0xff0000) >> 16);
+                    values[2] += (byte)((Base.photoOriginal.pixelData[tmp[2]] & 0xff00) >> 8);
+                    values[2] += (byte)((Base.photoOriginal.pixelData[tmp[2]] & 0xff));
 
                     tmp[3] = Base.photo.GetIndex(x - 1, y);
-                    values[3] += (byte)((Base.photoOrginal.pixelData[tmp[3]] & 0xff0000) >> 16);
-                    values[3] += (byte)((Base.photoOrginal.pixelData[tmp[3]] & 0xff00) >> 8);
-                    values[3] += (byte)((Base.photoOrginal.pixelData[tmp[3]] & 0xff));
+                    values[3] += (byte)((Base.photoOriginal.pixelData[tmp[3]] & 0xff0000) >> 16);
+                    values[3] += (byte)((Base.photoOriginal.pixelData[tmp[3]] & 0xff00) >> 8);
+                    values[3] += (byte)((Base.photoOriginal.pixelData[tmp[3]] & 0xff));
 
                     tmp[4] = index;
-                    values[4] += (byte)((Base.photoOrginal.pixelData[tmp[4]] & 0xff0000) >> 16);
-                    values[4] += (byte)((Base.photoOrginal.pixelData[tmp[4]] & 0xff00) >> 8);
-                    values[4] += (byte)((Base.photoOrginal.pixelData[tmp[4]] & 0xff));
+                    values[4] += (byte)((Base.photoOriginal.pixelData[tmp[4]] & 0xff0000) >> 16);
+                    values[4] += (byte)((Base.photoOriginal.pixelData[tmp[4]] & 0xff00) >> 8);
+                    values[4] += (byte)((Base.photoOriginal.pixelData[tmp[4]] & 0xff));
 
                     tmp[5] = Base.photo.GetIndex(x + 1, y);
-                    values[5] += (byte)((Base.photoOrginal.pixelData[tmp[5]] & 0xff0000) >> 16);
-                    values[5] += (byte)((Base.photoOrginal.pixelData[tmp[5]] & 0xff00) >> 8);
-                    values[5] += (byte)((Base.photoOrginal.pixelData[tmp[5]] & 0xff));
+                    values[5] += (byte)((Base.photoOriginal.pixelData[tmp[5]] & 0xff0000) >> 16);
+                    values[5] += (byte)((Base.photoOriginal.pixelData[tmp[5]] & 0xff00) >> 8);
+                    values[5] += (byte)((Base.photoOriginal.pixelData[tmp[5]] & 0xff));
 
                     tmp[6] = Base.photo.GetIndex(x - 1, y + 1);
-                    values[6] += (byte)((Base.photoOrginal.pixelData[tmp[6]] & 0xff0000) >> 16);
-                    values[6] += (byte)((Base.photoOrginal.pixelData[tmp[6]] & 0xff00) >> 8);
-                    values[6] += (byte)((Base.photoOrginal.pixelData[tmp[6]] & 0xff));
+                    values[6] += (byte)((Base.photoOriginal.pixelData[tmp[6]] & 0xff0000) >> 16);
+                    values[6] += (byte)((Base.photoOriginal.pixelData[tmp[6]] & 0xff00) >> 8);
+                    values[6] += (byte)((Base.photoOriginal.pixelData[tmp[6]] & 0xff));
 
                     tmp[7] = Base.photo.GetIndex(x, y + 1);
-                    values[7] += (byte)((Base.photoOrginal.pixelData[tmp[7]] & 0xff0000) >> 16);
-                    values[7] += (byte)((Base.photoOrginal.pixelData[tmp[7]] & 0xff00) >> 8);
-                    values[7] += (byte)((Base.photoOrginal.pixelData[tmp[7]] & 0xff));
+                    values[7] += (byte)((Base.photoOriginal.pixelData[tmp[7]] & 0xff0000) >> 16);
+                    values[7] += (byte)((Base.photoOriginal.pixelData[tmp[7]] & 0xff00) >> 8);
+                    values[7] += (byte)((Base.photoOriginal.pixelData[tmp[7]] & 0xff));
 
                     tmp[8] = Base.photo.GetIndex(x + 1, y + 1);
-                    values[8] += (byte)((Base.photoOrginal.pixelData[tmp[8]] & 0xff0000) >> 16);
-                    values[8] += (byte)((Base.photoOrginal.pixelData[tmp[8]] & 0xff00) >> 8);
-                    values[8] += (byte)((Base.photoOrginal.pixelData[tmp[8]] & 0xff));
+                    values[8] += (byte)((Base.photoOriginal.pixelData[tmp[8]] & 0xff0000) >> 16);
+                    values[8] += (byte)((Base.photoOriginal.pixelData[tmp[8]] & 0xff00) >> 8);
+                    values[8] += (byte)((Base.photoOriginal.pixelData[tmp[8]] & 0xff));
 
                     var tmp2 = values.OrderBy(i => i.Value);
                     int tmp3 = tmp2.ElementAt(4).Key;
                     
-                    Base.photo.pixelData[index] = Base.photoOrginal.pixelData[tmp[tmp3]];
+                    Base.photo.pixelData[index] = Base.photoOriginal.pixelData[tmp[tmp3]];
                 }
             }
 
@@ -182,15 +182,15 @@ namespace Image_Surface_Comparison_System
                         for (int wi = -1; wi < 2; wi++)
                         {
                             int tmp = Gx[hw + 1][wi + 1];
-                            r = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff0000) >> 16);
+                            r = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff0000) >> 16);
                             new_x[0] += tmp * r;
                             new_y[0] += tmp * r;
 
-                            g = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff00) >> 8);
+                            g = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff00) >> 8);
                             new_x[1] += tmp * g;
                             new_y[1] += tmp * g;
 
-                            b = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff));
+                            b = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff));
                             new_x[2] += tmp * b;
                             new_y[2] += tmp * b;
                         }
@@ -229,14 +229,14 @@ namespace Image_Surface_Comparison_System
                         {
                             int tmp = Gx[hw + 1][wi + 1];
                             double tmp2;
-                            tmp2 = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff0000) >> 16);
+                            tmp2 = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff0000) >> 16);
                             sw += tmp;
                             r += tmp * tmp2;
 
-                            tmp2 = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff00) >> 8);
+                            tmp2 = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff00) >> 8);
                             g += tmp * tmp2;
 
-                            tmp2 = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff));
+                            tmp2 = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff));
                             b += tmp * tmp2;
                         }
                     }
@@ -283,14 +283,14 @@ namespace Image_Surface_Comparison_System
                         {
                             int tmp = Gx[hw + 1][wi + 1];
                             double tmp2;
-                            tmp2 = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff0000) >> 16);
+                            tmp2 = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff0000) >> 16);
                             sw += tmp;
                             r += tmp * tmp2;
 
-                            tmp2 = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff00) >> 8);
+                            tmp2 = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff00) >> 8);
                             g += tmp * tmp2;
 
-                            tmp2 = ((Base.photoOrginal.pixelData[Base.photoOrginal.GetIndex(i + hw, j + wi)] & 0xff));
+                            tmp2 = ((Base.photoOriginal.pixelData[Base.photoOriginal.GetIndex(i + hw, j + wi)] & 0xff));
                             b += tmp * tmp2;
                         }
                     }
@@ -316,11 +316,11 @@ namespace Image_Surface_Comparison_System
 
                 if (value >= 0 && value <= 255)
                 {
-                    for (int i = 0; i < Base.photoOrginal.pixelData.Length; i++)
+                    for (int i = 0; i < Base.photoOriginal.pixelData.Length; i++)
                     {
-                        byte red = (byte)((Base.photoOrginal.pixelData[i] & 0xff0000) >> 16);
-                        byte green = (byte)((Base.photoOrginal.pixelData[i] & 0xff00) >> 8);
-                        byte blue = (byte)((Base.photoOrginal.pixelData[i] & 0xff));
+                        byte red = (byte)((Base.photoOriginal.pixelData[i] & 0xff0000) >> 16);
+                        byte green = (byte)((Base.photoOriginal.pixelData[i] & 0xff00) >> 8);
+                        byte blue = (byte)((Base.photoOriginal.pixelData[i] & 0xff));
                         byte alpha = 0;
 
                         if ((int)(0.114 * blue + 0.587 * green + 0.299 * red) <= value)

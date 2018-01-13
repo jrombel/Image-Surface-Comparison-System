@@ -33,7 +33,8 @@
             There is a "Photos" folder in the executable program location. The photos to be compared should be in the directories 
             in this folder.<LineBreak/><LineBreak/>
             Photographs in one study should be made of the same distance (you can use a tripod) and it is best to be made with the 
-            same camera (a guarantee of obtaining similar photos and the same resolution of the photo).
+            same camera (a guarantee of obtaining similar photos and the same resolution of the photo). Supported photo formats: 
+            JPEG, PNG, TIFF and BMP.
             </TextBlock>
 
             <TextBlock Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontFamily="Segoe UI" FontSize="25" Margin="5" Foreground="White" TextWrapping="WrapWithOverflow">

@@ -17,22 +17,19 @@
         <Border BorderThickness="1 0 1 1" BorderBrush="#a0a0a0">
             <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#5a5a5a">
                 <Label Content="Album: " VerticalAlignment="Center" Foreground="White"/>
-                <ComboBox Name="album_cb" Margin="5" VerticalAlignment="Center" DropDownOpened="album_cb_DropDownOpened" SelectionChanged="album_cb_SelectionChanged" Width="200"/>
-
-                <Button Content="Update" Margin="4" Padding="3" Click="UpdateClick" />
-
-                <Label Content="Order: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
-                <ComboBox Name="order_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged"  Width="60">
+                <ComboBox Name="album_cb" Margin="3" VerticalAlignment="Center" DropDownOpened="album_cb_DropDownOpened" SelectionChanged="album_cb_SelectionChanged" Width="200"/>
+                <Button Content=" Update " Margin="20,5,5,5" Padding="3" Click="UpdateClick" />
+                <Label Content="Order: " VerticalAlignment="Center" Foreground="White" Margin="20,4,4,4"/>
+                <ComboBox Name="order_cb" Margin="3" VerticalAlignment="Center" SelectionChanged="order_cb_SelectionChanged"  Width="60">
                     <ComboBoxItem Name="name_cbi" Content="Name" IsSelected="True"/>
                     <ComboBoxItem Name="date_cbi" Content="Date" />
                 </ComboBox>
-                <Label Content="Type: " VerticalAlignment="Center" Foreground="White" Margin="20,0,0,0"/>
-                <ComboBox Name="type_cb" Margin="5" VerticalAlignment="Center" SelectionChanged="type_cb_SelectionChanged"  Width="100">
+                <Label Content="Type: " VerticalAlignment="Center" Foreground="White" Margin="20,4,4,4"/>
+                <ComboBox Name="type_cb" Margin="3" VerticalAlignment="Center" SelectionChanged="type_cb_SelectionChanged"  Width="100">
                     <ComboBoxItem Name="percentages_cbi" Content="Percent" IsSelected="True"/>
                     <ComboBoxItem Name="pixels_cbi" Content="Pixels" />
                 </ComboBox>
-
-                <Button Content="Print" Margin="20,4,4,4" Padding="3" Click="PrintClick" />
+                <Button Content=" Print " Margin="20,5,5,5" Padding="3" Click="PrintClick" />
 
             </StackPanel>
         </Border>

@@ -97,8 +97,8 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1" Margin="1">
             <StackPanel>
 
-                <GroupBox Header="Survival rate">
-                    <Label Name="degree_l" Content="Mark areas."/>
+                <GroupBox Header="Selected area">
+                    <Label Name="degree_l" Content="Load photo."/>
                 </GroupBox>
 
                 <GroupBox Header="Tools">
