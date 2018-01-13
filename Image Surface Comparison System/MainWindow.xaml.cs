@@ -9,7 +9,7 @@ namespace Image_Surface_Comparison_System
     {
         Page calculation_p;
         Page analysis_p;
-        Page aboutSystem_p;
+        Page help_p;
 
         public MainWindow()
         {
@@ -17,7 +17,7 @@ namespace Image_Surface_Comparison_System
 
             calculation_p = new Calculation();
             analysis_p = new Analysis();
-            aboutSystem_p = new AboutSystem();
+            help_p = new Help();
 
             main_f.Content = calculation_p;
             Base.path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -32,9 +32,9 @@ namespace Image_Surface_Comparison_System
             main_f.Content = analysis_p;
             Base.Save();
         }
-        private void AboutSystem_Click(object sender, RoutedEventArgs e)
+        private void Help_Click(object sender, RoutedEventArgs e)
         {
-            main_f.Content = aboutSystem_p;
+            main_f.Content = help_p;
         }
         private void Exit_Click(object sender, RoutedEventArgs e)
         {

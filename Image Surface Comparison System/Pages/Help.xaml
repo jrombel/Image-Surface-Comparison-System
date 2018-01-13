@@ -1,11 +1,11 @@
-﻿<Page x:Class="Image_Surface_Comparison_System.Pages.AboutSystem"
+﻿<Page x:Class="Image_Surface_Comparison_System.Pages.Help"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Image_Surface_Comparison_System.Pages"
       mc:Ignorable="d" 
-      Title="AboutSystem">
+      Title="Help">
 
     <Border BorderThickness="1,0,1,1" BorderBrush="#a0a0a0">
         <Grid Background="#5a5a5a">
@@ -29,7 +29,7 @@
             Pages:<LineBreak/>
             - Calculate - marking interesting surfaces on the photos<LineBreak/>
             - Analysis - comparing the size of selected areas on the graph<LineBreak/>
-            - About system - this page<LineBreak/><LineBreak/>
+            - Help - this page<LineBreak/><LineBreak/>
             There is a "Photos" folder in the executable program location. The photos to be compared should be in the directories 
             in this folder.<LineBreak/><LineBreak/>
             Photographs in one study should be made of the same distance (you can use a tripod) and it is best to be made with the 

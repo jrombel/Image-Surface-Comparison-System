@@ -22,10 +22,10 @@
         <StackPanel Orientation="Horizontal">
             <RadioButton GroupName="menu_gp" Style="{StaticResource {x:Type ToggleButton}}" Margin="3" Padding="2" Content="Calculate" Click="Calculate_Click" IsChecked="True" />
             <RadioButton GroupName="menu_gp" Style="{StaticResource {x:Type ToggleButton}}" Margin="3" Padding="2" Content="Analysis" Click="Analysis_Click" />
-            <RadioButton GroupName="menu_gp" Style="{StaticResource {x:Type ToggleButton}}" Margin="3" Padding="2" Content="Help" Click="AboutSystem_Click" />
+            <RadioButton GroupName="menu_gp" Style="{StaticResource {x:Type ToggleButton}}" Margin="3" Padding="2" Content="Help" Click="Help_Click" />
         </StackPanel>
 
-        <Label Grid.Column="2" VerticalAlignment="Center" FontSize="15.5" FontFamily="Calibri Light" Foreground="White">The system was created as a result of the graduation thesis at the Faculty of Computer Science of the Bialystok University of Technology</Label>
+        <Label Grid.Column="2" VerticalAlignment="Center" FontSize="15.6" FontFamily="Calibri Light" Foreground="White">The system was created as a result of the graduation thesis at the Faculty of Computer Science of the Bialystok University of Technology</Label>
         <Separator Grid.Row="1" Grid.ColumnSpan="3" Margin="0" />
 
         <Frame Grid.Row="2" Grid.ColumnSpan="3" Name="main_f" NavigationUIVisibility="Hidden"/>
