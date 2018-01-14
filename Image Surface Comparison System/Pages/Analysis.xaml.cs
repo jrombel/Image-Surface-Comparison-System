@@ -180,6 +180,12 @@ namespace Image_Surface_Comparison_System.Pages
                     }
                 }
                 chartAxisX.Labels = LabelsTmp.ToArray();
+
+                if (ValuesTmp.Count > 1)
+                {
+                    adcisGlobal_l.Content = "ADCIS global: " + Math.Round((ValuesTmp[ValuesTmp.Count - 1].Value / ValuesTmp[0].Value) * 100, 2) + "%";
+                    adcisLast_l.Content = "ADCIS last: " + Math.Round((ValuesTmp[ValuesTmp.Count - 1].Value / ValuesTmp[ValuesTmp.Count - 2].Value) * 100, 2) + "%";
+                }
             }
             else
                 MessageBox.Show("No areas selected!");
